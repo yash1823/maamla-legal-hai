@@ -1,0 +1,79 @@
+import type {
+  SearchRequest,
+  SearchResponse,
+  CaseDetailRequest,
+  CaseDetailResponse,
+  CaseResult,
+} from "@shared/api";
+
+// You can update this base URL to point to your FastAPI backend
+const API_BASE_URL =
+  "http://127.0.0.1:8001";
+
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
+async function apiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new ApiError(
+      `API request failed: ${response.statusText}`,
+      response.status,
+    );
+  }
+
+  return response.json();
+}
+
+export async function searchCases(params: SearchRequest): Promise<SearchResponse> {
+  const res = await fetch("http://localhost:8001/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+
+  const data = await res.json();
+
+  const cases = data.docs.map((doc: any): CaseResult => ({
+    docid: doc.tid.toString(),
+    title: doc.title || "Untitled",
+    court: doc.doctype || "Unknown Court",
+    date: doc.publishdate || "Unknown Date",
+    snippet: doc.fragment || "",
+    citation_count: doc.numcites || 0,
+  }));
+
+  return {
+    cases,
+    total: cases.length,
+  };
+}
+
+
+export async function getCaseDetail(
+  docid: string,
+): Promise<CaseDetailResponse> {
+  return apiRequest<CaseDetailResponse>(`/doc/${docid}`, {
+    method: "POST",
+    body: JSON.stringify({ docid }),
+  });
+}

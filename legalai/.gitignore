@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+venv/
+.env.*
+
+# Testing
+htmlcov/
+.tox/
+.coverage
+.cache
+.pytest_cache/
+
+# Misc
+*.log
+*.sqlite3
+.DS_Store

@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Legal Case Search App Theme
+   * Modern, professional color palette with excellent readability
+   */
+  :root {
+    /* Light theme - Clean and professional */
+    --background: 0 0% 100%;
+    --foreground: 224 9% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 9% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 9% 13%;
+
+    /* Primary - Professional blue for legal industry */
+    --primary: 213 94% 17%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Subtle gray */
+    --secondary: 220 7% 96%;
+    --secondary-foreground: 224 9% 13%;
+
+    --muted: 220 7% 96%;
+    --muted-foreground: 224 9% 46%;
+
+    --accent: 213 94% 95%;
+    --accent-foreground: 213 94% 17%;
+
+    /* Destructive - Professional red */
+    --destructive: 0 84% 47%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 7% 89%;
+    --input: 220 7% 89%;
+    --ring: 213 94% 17%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar colors */
+    --sidebar-background: 220 7% 98%;
+    --sidebar-foreground: 224 9% 13%;
+    --sidebar-primary: 213 94% 17%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 7% 94%;
+    --sidebar-accent-foreground: 224 9% 13%;
+    --sidebar-border: 220 7% 89%;
+    --sidebar-ring: 213 94% 17%;
+
+    /* Custom legal app colors */
+    --legal-blue: 213 94% 17%;
+    --legal-blue-light: 213 94% 95%;
+    --legal-gray: 224 9% 46%;
+    --legal-gray-light: 220 7% 96%;
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+  }
+
+  .dark {
+    /* Dark theme - Professional and easy on the eyes */
+    --background: 224 9% 6%;
+    --foreground: 220 7% 96%;
+
+    --card: 224 9% 8%;
+    --card-foreground: 220 7% 96%;
+
+    --popover: 224 9% 8%;
+    --popover-foreground: 220 7% 96%;
+
+    --primary: 213 94% 62%;
+    --primary-foreground: 224 9% 6%;
+
+    --secondary: 224 9% 13%;
+    --secondary-foreground: 220 7% 96%;
+
+    --muted: 224 9% 13%;
+    --muted-foreground: 224 9% 46%;
+
+    --accent: 224 9% 13%;
+    --accent-foreground: 220 7% 96%;
+
+    --destructive: 0 84% 47%;
+    --destructive-foreground: 220 7% 96%;
+
+    --border: 224 9% 17%;
+    --input: 224 9% 17%;
+    --ring: 213 94% 62%;
+
+    --sidebar-background: 224 9% 4%;
+    --sidebar-foreground: 220 7% 96%;
+    --sidebar-primary: 213 94% 62%;
+    --sidebar-primary-foreground: 224 9% 6%;
+    --sidebar-accent: 224 9% 13%;
+    --sidebar-accent-foreground: 220 7% 96%;
+    --sidebar-border: 224 9% 17%;
+    --sidebar-ring: 213 94% 62%;
+
+    /* Custom legal app colors - dark theme */
+    --legal-blue: 213 94% 62%;
+    --legal-blue-light: 224 9% 13%;
+    --legal-gray: 224 9% 70%;
+    --legal-gray-light: 224 9% 13%;
+    --success: 142 76% 45%;
+    --warning: 38 92% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Custom scrollbar for legal documents */
+  .legal-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .legal-scroll::-webkit-scrollbar-track {
+    @apply bg-muted rounded-full;
+  }
+
+  .legal-scroll::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  .legal-scroll::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+  /* Legal document content styling */
+  .legal-content {
+    @apply prose prose-gray dark:prose-invert max-w-none;
+    @apply prose-headings:text-foreground prose-p:text-foreground;
+    @apply prose-strong:text-foreground prose-em:text-muted-foreground;
+    @apply prose-a:text-primary prose-a:no-underline hover:prose-a:underline;
+  }
+
+  /* Search result highlighting */
+  .search-highlight {
+    @apply bg-yellow-200 dark:bg-yellow-900/30 px-1 py-0.5 rounded;
+  }
+}
+
+@layer utilities {
+  /* Line clamp utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
