@@ -187,7 +187,7 @@ export default function Index() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              © 2024 Legal Case Search. Search Indian legal cases and
+              © 2025 Maamla Legal Hai. Search Indian legal cases and
               judgments.
             </p>
             <p className="mt-2">

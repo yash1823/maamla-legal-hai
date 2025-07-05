@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { getCaseDetail } from "@/lib/api";
+import { getCaseDetail, summarizeCase } from "@/lib/api";
 import type { CaseDetail } from "@shared/api";
 
 function transformCaseDetail(raw: any): CaseDetail {
@@ -27,13 +27,14 @@ function transformCaseDetail(raw: any): CaseDetail {
   };
 }
 
-
 export default function CaseDetailPage() {
   const { docid } = useParams<{ docid: string }>();
   const navigate = useNavigate();
   const [caseDetail, setCaseDetail] = useState<CaseDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
 
   useEffect(() => {
     if (!docid) {
@@ -77,6 +78,19 @@ export default function CaseDetailPage() {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleSummarize = async () => {
+    if (!docid) return;
+    setIsSummarizing(true);
+    try {
+      const data = await summarizeCase(docid);
+      setSummary(data.summary);
+    } catch (e) {
+      setSummary("Failed to summarize.");
+    } finally {
+      setIsSummarizing(false);
+    }
   };
 
   if (isLoading) {
@@ -201,11 +215,26 @@ export default function CaseDetailPage() {
           </CardHeader>
           <CardContent>
             <div
-  className="legal-content legal-scroll max-h-screen overflow-y-auto prose dark:prose-invert"
-  dangerouslySetInnerHTML={{ __html: caseDetail.clean_doc }}
-/>
+              className="legal-content legal-scroll max-h-screen overflow-y-auto prose dark:prose-invert"
+              dangerouslySetInnerHTML={{ __html: caseDetail.clean_doc }}
+            />
           </CardContent>
         </Card>
+
+        {/* Summarize Button and Summary */}
+        <Button
+          onClick={handleSummarize}
+          disabled={isSummarizing}
+          className="mb-4"
+        >
+          {isSummarizing ? "Summarizing..." : "Summarize"}
+        </Button>
+        {summary && (
+          <div className="prose dark:prose-invert my-4 p-4 border rounded bg-muted/30">
+            <strong>Summary:</strong>
+            <div>{summary}</div>
+          </div>
+        )}
       </div>
     </div>
   );

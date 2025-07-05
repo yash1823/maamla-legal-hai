@@ -38,7 +38,7 @@ export function CaseCard({ case: caseData, onViewDetails }: CaseCardProps) {
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Scale className="h-4 w-4" />
-                <span className="truncate">{caseData.court}</span>
+                <span className="truncate">{caseData.docsource}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
@@ -46,9 +46,9 @@ export function CaseCard({ case: caseData, onViewDetails }: CaseCardProps) {
               </div>
             </div>
           </div>
-          {caseData.citation_count !== undefined && (
+          {caseData.numcites !== undefined && (
             <Badge variant="secondary" className="shrink-0">
-              {caseData.citation_count} citations
+              {caseData.numcites} citations
             </Badge>
           )}
         </div>

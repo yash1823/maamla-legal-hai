@@ -19,3 +19,10 @@ class SearchQuery(BaseModel):
     query: str
     page: Optional[int] = 0  # Now optional
     filters: Optional[SearchFilters]
+
+from pydantic import BaseModel
+
+class RelevanceRequest(BaseModel):
+    query: str
+    summary: str  # Pass summary directly from UI
+

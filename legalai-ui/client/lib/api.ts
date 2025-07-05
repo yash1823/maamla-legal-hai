@@ -77,3 +77,21 @@ export async function getCaseDetail(
     body: JSON.stringify({ docid }),
   });
 }
+
+export async function summarizeCase(docid: string): Promise<{ summary: string }> {
+  const res = await fetch(`http://localhost:8001/summarize/${docid}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Failed to summarize case");
+  return res.json();
+}
+
+export async function getRelevance(query: string, docid: string): Promise<{ explanation: string }> {
+  const res = await fetch(`http://localhost:8001/relevance/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, docid }),
+  });
+  if (!res.ok) throw new Error("Failed to get relevance");
+  return res.json();
+}
