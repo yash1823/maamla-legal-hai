@@ -16,6 +16,18 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getCaseDetail } from "@/lib/api";
 import type { CaseDetail } from "@shared/api";
 
+function transformCaseDetail(raw: any): CaseDetail {
+  return {
+    title: raw.title,
+    citation_count: raw.numcites || 0,
+    court: raw.docsource || "Unknown Court",
+    date: raw.date || raw.publishdate || "",
+    publish_date: raw.publishdate || "",
+    clean_doc: raw.doc || "No document found",
+  };
+}
+
+
 export default function CaseDetailPage() {
   const { docid } = useParams<{ docid: string }>();
   const navigate = useNavigate();
@@ -38,12 +50,13 @@ export default function CaseDetailPage() {
     setError(null);
 
     try {
-      const response = await getCaseDetail(caseId);
-      setCaseDetail(response.case);
+      const raw = await getCaseDetail(caseId);
+      const transformed = transformCaseDetail(raw);
+      setCaseDetail(transformed);
     } catch (err) {
       console.error("Error fetching case detail:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to load case details",
+        err instanceof Error ? err.message : "Failed to load case details"
       );
     } finally {
       setIsLoading(false);
@@ -188,11 +201,9 @@ export default function CaseDetailPage() {
           </CardHeader>
           <CardContent>
             <div
-              className="legal-content legal-scroll max-h-screen overflow-y-auto"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {caseDetail.clean_doc}
-            </div>
+  className="legal-content legal-scroll max-h-screen overflow-y-auto prose dark:prose-invert"
+  dangerouslySetInnerHTML={{ __html: caseDetail.clean_doc }}
+/>
           </CardContent>
         </Card>
       </div>

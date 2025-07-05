@@ -19,14 +19,13 @@ export interface SearchRequest {
   };
 }
 
-
 export interface CaseResult {
   docid: string;
   title: string;
-  court: string;
+  docsource: string; // renamed from court
   date: string;
   snippet: string;
-  citation_count?: number;
+  numcites?: number; // renamed from citation_count
 }
 
 export interface SearchResponse {
@@ -39,14 +38,14 @@ export interface CaseDetailRequest {
 }
 
 export interface CaseDetail {
-  docid: string;
   title: string;
+  citation_count: number;
   court: string;
   date: string;
-  citation_count: number;
   publish_date: string;
   clean_doc: string;
 }
+
 
 export interface CaseDetailResponse {
   case: CaseDetail;

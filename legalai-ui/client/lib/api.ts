@@ -56,10 +56,10 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
   const cases = data.docs.map((doc: any): CaseResult => ({
     docid: doc.tid.toString(),
     title: doc.title || "Untitled",
-    court: doc.doctype || "Unknown Court",
+    docsource: doc.doctype || "Unknown Court",
     date: doc.publishdate || "Unknown Date",
     snippet: doc.fragment || "",
-    citation_count: doc.numcites || 0,
+    numcites: doc.numcites || 0,
   }));
 
   return {
