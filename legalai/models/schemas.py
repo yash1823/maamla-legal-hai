@@ -6,8 +6,7 @@ from pydantic import BaseModel
 
 class SearchFilters(BaseModel):
     doctypes: Optional[str] = None
-    fromdate: Optional[str] = None
-    todate: Optional[str] = None
+    year: Optional[int] = None  
     title: Optional[str] = None
     cite: Optional[str] = None
     author: Optional[str] = None

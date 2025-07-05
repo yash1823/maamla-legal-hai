@@ -22,12 +22,13 @@ async def search_cases(search_query: SearchQuery):
 
     if search_query.filters:
         f = search_query.filters
+
+        # Add year to query if present
+        if hasattr(f, "year") and f.year:
+            params["formInput"] = f"{search_query.query} year:{f.year}"
+
         if f.doctypes:
             params["doctypes"] = f.doctypes
-        if f.fromdate:
-            params["fromdate"] = f.fromdate
-        if f.todate:
-            params["todate"] = f.todate
         if f.title:
             params["title"] = f.title
         if f.cite:
@@ -42,10 +43,10 @@ async def search_cases(search_query: SearchQuery):
             params["maxpages"] = str(f.maxpages)
 
     result = await fetch_cases(params)
-    return JSONResponse(content=result)
+    return result
 
 
 @app.post("/doc/{docid}")
 async def get_case_by_docid(docid: str):
     result = await fetch_case_by_docid(docid)
-    return JSONResponse(content=result)
+    return result
