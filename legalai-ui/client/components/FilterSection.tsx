@@ -13,8 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export interface FilterValues {
   courtTypes: string[];
-  fromDate: string;
-  toDate: string;
+  year: string; // or number
   maxCitations: string;
   title: string;
   author: string;
@@ -77,8 +76,7 @@ export function FilterSection({
 
   const hasActiveFilters =
     filters.courtTypes.length > 0 ||
-    filters.fromDate ||
-    filters.toDate ||
+    filters.year ||
     filters.maxCitations ||
     filters.title ||
     filters.author ||
@@ -132,48 +130,17 @@ export function FilterSection({
                 </div>
               </div>
 
-              {/* Date Range */}
+            {/* Year Filter */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Date Range</Label>
-                <div className="space-y-3">
-                  <div>
-                    <Label
-                      htmlFor="fromDate"
-                      className="text-xs text-muted-foreground"
-                    >
-                      From Date
-                    </Label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                      <Input
-                        id="fromDate"
-                        type="date"
-                        value={filters.fromDate}
-                        onChange={(e) =>
-                          updateFilter("fromDate", e.target.value)
-                        }
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="toDate"
-                      className="text-xs text-muted-foreground"
-                    >
-                      To Date
-                    </Label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                      <Input
-                        id="toDate"
-                        type="date"
-                        value={filters.toDate}
-                        onChange={(e) => updateFilter("toDate", e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
+                <Label className="text-sm font-medium">Year</Label>
+                <div>
+                  <Input
+                    id="year"
+                    type="number"
+                    placeholder="e.g., 2017"
+                    value={filters.year}
+                    onChange={(e) => updateFilter("year", e.target.value)}
+                  />
                 </div>
               </div>
 
