@@ -93,10 +93,10 @@ async def summarize_case(text: str) -> str:
 
     combined_summary = "\n".join(first_pass_summaries)
     final_prompt = (
-        "The following are partial summaries of a legal document. "
-        "Please generate a coherent 3-4 sentence final summary for a layperson:\n\n"
-        f"{combined_summary}"
-    )
+    "You are a legal assistant. Based on the following section-wise summaries of a legal judgment, "
+    "generate a clear and concise 3-4 sentence overall summary. Avoid repeating points, and write in plain English "
+    "so that a non-lawyer can understand the key outcomes and significance of the case:\n\n"
+    f"{combined_summary}")
     return await call_groq(final_prompt, max_tokens=256)
 
 async def hierarchical_relevance(query: str, text: str) -> str:

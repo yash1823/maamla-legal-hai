@@ -1,6 +1,6 @@
 /**
  * Shared code between client and server
- * Types for legal case search API
+ * Types for Maamla Legal Hai API
  */
 
 export interface SearchRequest {

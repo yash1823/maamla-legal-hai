@@ -26,7 +26,7 @@ const NotFound = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">
-                  Legal Case Search
+                  Maamla Legal Hai
                 </h1>
                 <p className="text-sm text-muted-foreground">
                   Search Indian legal cases and judgments

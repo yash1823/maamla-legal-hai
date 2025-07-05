@@ -193,10 +193,6 @@ export default function CaseDetailPage() {
                   <span className="font-medium">{caseDetail.court}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  <span>Decided on {formatDate(caseDetail.date)}</span>
-                </div>
-                <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   <span>Published {formatDate(caseDetail.publish_date)}</span>
                 </div>
