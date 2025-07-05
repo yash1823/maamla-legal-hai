@@ -9,8 +9,7 @@ import type { CaseResult, SearchRequest } from "@shared/api";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
-  fromDate: "",
-  toDate: "",
+  year: "", 
   maxCitations: "",
   title: "",
   author: "",
@@ -26,65 +25,71 @@ export default function Index() {
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
- const handleSearch = async () => {
-  if (!searchQuery.trim()) return;
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
 
-  setIsLoading(true);
-  setError(null);
-  setHasSearched(true);
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true);
 
-  try {
-    const searchParams: SearchRequest = {
-      query: searchQuery.trim(),
-      page: 0, // ✅ Add this line
-    };
+    try {
+      const searchParams: SearchRequest = {
+        query: searchQuery.trim(),
+        page: 0,
+      };
 
-    // Build the filters object only if needed
-    const filtersPayload: any = {};
+      const filtersPayload: any = {};
 
-    if (filters.courtTypes.length > 0) {
-filtersPayload.doctypes = filters.courtTypes
-  .map((court) => courtTypeMap[court])
-  .filter(Boolean) // remove undefined courts
-  .join(",");    }
-    if (filters.fromDate) {
-      filtersPayload.fromdate = formatToKanoonDate(filters.fromDate);
-    }
-    if (filters.toDate) {
-      filtersPayload.todate = formatToKanoonDate(filters.toDate);
-    }
-    if (filters.maxCitations) {
-      filtersPayload.maxcites = parseInt(filters.maxCitations, 10);
-    }
-    if (filters.title) {
-      filtersPayload.title = filters.title;
-    }
-    if (filters.author) {
-      filtersPayload.author = filters.author;
-    }
-    if (filters.bench) {
-      filtersPayload.bench = filters.bench;
-    }
+      if (filters.courtTypes.length > 0) {
+        filtersPayload.doctypes = filters.courtTypes
+          .map((court) => courtTypeMap[court])
+          .filter(Boolean)
+          .join(",");
+      }
 
-    if (Object.keys(filtersPayload).length > 0) {
-      searchParams.filters = filtersPayload;
+
+
+      if (filters.year) {
+        const parsedYear = parseInt(filters.year, 10);
+        if (!isNaN(parsedYear)) {
+          filtersPayload.year = parsedYear;
+        }
+      }
+
+      if (filters.maxCitations) {
+        filtersPayload.maxcites = parseInt(filters.maxCitations, 10);
+      }
+
+      if (filters.title) {
+        filtersPayload.title = filters.title;
+      }
+
+      if (filters.author) {
+        filtersPayload.author = filters.author;
+      }
+
+      if (filters.bench) {
+        filtersPayload.bench = filters.bench;
+      }
+
+      if (Object.keys(filtersPayload).length > 0) {
+        searchParams.filters = filtersPayload;
+      }
+
+      const response = await searchCases(searchParams);
+      setResults(response.cases || []);
+    } catch (err) {
+      console.error("Search error:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while searching"
+      );
+      setResults([]);
+    } finally {
+      setIsLoading(false);
     }
-
-    const response = await searchCases(searchParams);
-    setResults(response.cases || []);
-  } catch (err) {
-    console.error("Search error:", err);
-    setError(
-      err instanceof Error
-        ? err.message
-        : "An error occurred while searching"
-    );
-    setResults([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   const handleViewDetails = (docid: string) => {
     navigate(`/case/${docid}`);
@@ -95,44 +100,42 @@ filtersPayload.doctypes = filters.courtTypes
   };
 
   const courtTypeMap: Record<string, string> = {
-  "Supreme Court of India": "supremecourt",
-  "Delhi High Court": "delhi",
-  "Mumbai High Court": "bombay",
-  "Chennai High Court": "chennai",
-  "Calcutta High Court": "kolkata",
-  "Karnataka High Court": "karnataka",
-  "Allahabad High Court": "allahabad",
-  "Rajasthan High Court": "rajasthan",
-  "Gujarat High Court": "gujarat",
-  "Bombay High Court": "bombay",
-  "Madras High Court": "chennai",
-  "Kerala High Court": "kerala",
-  "Andhra Pradesh High Court": "andhra",
-  "Telangana High Court": "telangana",
-  "Orissa High Court": "orissa",
-  "Madhya Pradesh High Court": "madhyapradesh",
-  "Patna High Court": "patna",
-  "Gauhati High Court": "gauhati",
-  "Punjab and Haryana High Court": "punjab",
-  "Himachal Pradesh High Court": "himachal_pradesh",
-  "Uttarakhand High Court": "uttaranchal",
-  "Jharkhand High Court": "jharkhand",
-  "Chhattisgarh High Court": "chattisgarh",
-  "Tripura High Court": "tripura",
-  "Manipur High Court": "manipur",
-  "Meghalaya High Court": "meghalaya",
-  "Sikkim High Court": "sikkim",
-};
+    "Supreme Court of India": "supremecourt",
+    "Delhi High Court": "delhi",
+    "Mumbai High Court": "bombay",
+    "Chennai High Court": "chennai",
+    "Calcutta High Court": "kolkata",
+    "Karnataka High Court": "karnataka",
+    "Allahabad High Court": "allahabad",
+    "Rajasthan High Court": "rajasthan",
+    "Gujarat High Court": "gujarat",
+    "Bombay High Court": "bombay",
+    "Madras High Court": "chennai",
+    "Kerala High Court": "kerala",
+    "Andhra Pradesh High Court": "andhra",
+    "Telangana High Court": "telangana",
+    "Orissa High Court": "orissa",
+    "Madhya Pradesh High Court": "madhyapradesh",
+    "Patna High Court": "patna",
+    "Gauhati High Court": "gauhati",
+    "Punjab and Haryana High Court": "punjab",
+    "Himachal Pradesh High Court": "himachal_pradesh",
+    "Uttarakhand High Court": "uttaranchal",
+    "Jharkhand High Court": "jharkhand",
+    "Chhattisgarh High Court": "chattisgarh",
+    "Tripura High Court": "tripura",
+    "Manipur High Court": "manipur",
+    "Meghalaya High Court": "meghalaya",
+    "Sikkim High Court": "sikkim",
+  };
 
   function formatToKanoonDate(dateStr: string): string {
-  const [year, month, day] = dateStr.split("-");
-  return `${day}-${month}-${year}`;
-}
-
+    const [year, month, day] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center">
@@ -153,9 +156,7 @@ filtersPayload.doctypes = filters.courtTypes
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Search Section */}
         <section className="space-y-6">
           <SearchBar
             value={searchQuery}
@@ -171,7 +172,6 @@ filtersPayload.doctypes = filters.courtTypes
           />
         </section>
 
-        {/* Results Section */}
         <section>
           <ResultsList
             results={results}
@@ -183,7 +183,6 @@ filtersPayload.doctypes = filters.courtTypes
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="border-t bg-card/30 mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
