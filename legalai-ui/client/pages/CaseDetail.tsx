@@ -8,9 +8,15 @@ import {
   Quote,
   Loader2,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getCaseDetail, summarizeCase } from "@/lib/api";
@@ -38,7 +44,7 @@ export default function CaseDetailPage() {
 
   useEffect(() => {
     if (!docid) {
-      setError("No case ID provided");
+      setError("No case ID provided.");
       setIsLoading(false);
       return;
     }
@@ -49,7 +55,6 @@ export default function CaseDetailPage() {
   const fetchCaseDetail = async (caseId: string) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const raw = await getCaseDetail(caseId);
       const transformed = transformCaseDetail(raw);
@@ -87,7 +92,7 @@ export default function CaseDetailPage() {
       const data = await summarizeCase(docid);
       setSummary(data.summary);
     } catch (e) {
-      setSummary("Failed to summarize.");
+      setSummary("Failed to summarize the case.");
     } finally {
       setIsSummarizing(false);
     }
@@ -95,12 +100,10 @@ export default function CaseDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col items-center justify-center py-24 space-y-4">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Loading case details...</p>
-          </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Loading case details...</p>
         </div>
       </div>
     );
@@ -108,127 +111,112 @@ export default function CaseDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Results
-            </Button>
-          </div>
-          <Alert variant="destructive" className="max-w-4xl mx-auto">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Error:</strong> {error}
-            </AlertDescription>
-          </Alert>
-        </div>
+      <div className="min-h-screen px-4 py-8 max-w-4xl mx-auto">
+        <Button
+          variant="outline"
+          onClick={handleBack}
+          className="flex items-center gap-2 mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Results
+        </Button>
+
+        <Alert variant="destructive">
+          <AlertCircle className="h-5 w-5" />
+          <AlertDescription>
+            <strong>Error:</strong> {error}
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
 
   if (!caseDetail) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Results
-            </Button>
-          </div>
-          <div className="text-center py-24">
-            <FileText className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h2 className="text-xl font-medium text-foreground mb-2">
-              Case Not Found
-            </h2>
-            <p className="text-muted-foreground">
-              The requested case could not be found.
-            </p>
-          </div>
+      <div className="min-h-screen px-4 py-8 max-w-4xl mx-auto">
+        <Button
+          variant="outline"
+          onClick={handleBack}
+          className="flex items-center gap-2 mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Results
+        </Button>
+
+        <div className="text-center py-20">
+          <FileText className="h-12 w-12 text-muted-foreground mb-3 mx-auto" />
+          <h2 className="text-xl font-medium mb-1">Case Not Found</h2>
+          <p className="text-muted-foreground">No details available for this case.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Navigation */}
-        <div className="mb-6">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Results
-          </Button>
-        </div>
+    <div className="min-h-screen px-4 py-8 max-w-6xl mx-auto">
+      {/* Back Navigation */}
+      <Button
+        variant="outline"
+        onClick={handleBack}
+        className="flex items-center gap-2 mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Results
+      </Button>
 
-        {/* Case Header */}
-        <Card className="mb-8">
-          <CardHeader>
-            <div className="space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <CardTitle className="text-2xl font-bold leading-tight flex-1">
-                  {caseDetail.title}
-                </CardTitle>
-                <Badge variant="secondary" className="text-sm px-3 py-1">
-                  {caseDetail.citation_count} citations
-                </Badge>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Scale className="h-5 w-5" />
-                  <span className="font-medium">{caseDetail.court}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  <span>Published {formatDate(caseDetail.publish_date)}</span>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Case Content */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Quote className="h-5 w-5" />
-              Full Judgment
+      {/* Case Overview Card */}
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex justify-between items-start gap-4">
+            <CardTitle className="text-2xl font-semibold">
+              {caseDetail.title}
             </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className="legal-content legal-scroll max-h-screen overflow-y-auto prose dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: caseDetail.clean_doc }}
-            />
-          </CardContent>
-        </Card>
+            <Badge variant="secondary">{caseDetail.citation_count} citations</Badge>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Scale className="h-4 w-4" />
+              {caseDetail.court}
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              {formatDate(caseDetail.publish_date)}
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
 
-        {/* Summarize Button and Summary */}
+      {/* Full Judgment */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Quote className="h-5 w-5" />
+            Full Judgment
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div
+            className="legal-content legal-scroll max-h-[75vh] overflow-y-auto prose dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: caseDetail.clean_doc }}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Summarize Section */}
+      <div className="mt-6">
         <Button
           onClick={handleSummarize}
           disabled={isSummarizing}
-          className="mb-4"
+          className="flex items-center gap-2 mb-4"
         >
-          {isSummarizing ? "Summarizing..." : "Summarize"}
+          <Sparkles className="h-4 w-4" />
+          {isSummarizing ? "Summarizing..." : "Summarize Case"}
         </Button>
+
         {summary && (
-          <div className="prose dark:prose-invert my-4 p-4 border rounded bg-muted/30">
+          <div className="prose dark:prose-invert p-4 border rounded bg-muted/30">
             <strong>Summary:</strong>
-            <div>{summary}</div>
+            <p>{summary}</p>
           </div>
         )}
       </div>

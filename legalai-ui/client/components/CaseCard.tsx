@@ -80,7 +80,6 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
         </p>
 
         <div className="mt-3 space-y-2">
-          {/*
           <Button
             variant="outline"
             size="sm"
@@ -98,7 +97,6 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
               <p>{relevance}</p>
             </div>
           )}
-          */}
         </div>
       </CardContent>
 
