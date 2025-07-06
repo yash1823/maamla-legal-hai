@@ -6,6 +6,7 @@ import { FilterSection, FilterValues } from "@/components/FilterSection";
 import { ResultsList } from "@/components/ResultsList";
 import { searchCases } from "@/lib/api";
 import type { CaseResult, SearchRequest } from "@shared/api";
+import { saveMeta } from "../utils/meta";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
@@ -13,7 +14,7 @@ const initialFilters: FilterValues = {
   maxCitations: "",
   title: "",
   author: "",
-  bench: "",
+  bench: ""
 };
 
 export default function Index() {
@@ -46,8 +47,6 @@ export default function Index() {
           .filter(Boolean)
           .join(",");
       }
-
-
 
       if (filters.year) {
         const parsedYear = parseInt(filters.year, 10);

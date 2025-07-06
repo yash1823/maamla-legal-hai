@@ -17,8 +17,8 @@ class SearchFilters(BaseModel):
 
 class SearchQuery(BaseModel):
     query: str
-    page: Optional[int] = 0  # Now optional
-    filters: Optional[SearchFilters]
+    page: Optional[int] = 0  
+    filters: Optional[SearchFilters] = None
 
 from pydantic import BaseModel
 

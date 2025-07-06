@@ -56,7 +56,7 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
   const cases = data.docs.map((doc: any): CaseResult => ({
     docid: doc.tid.toString(),
     title: doc.title || "Untitled",
-    docsource: doc.doctype || "Unknown Court",
+    docsource: doc.docsource || "Unknown Court",
     date: doc.publishdate || "Unknown Date",
     snippet: doc.fragment || "",
     numcites: doc.numcites || 0,
