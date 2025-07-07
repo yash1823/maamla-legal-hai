@@ -34,22 +34,23 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
     }
   };
 
-  const handleRelevance = async () => {
-    if (!userQuery) {
-      setRelevance("No search query provided.");
-      return;
-    }
-    setIsLoading(true);
-    setRelevance(null);
-    try {
-      const data = await getRelevance(userQuery, caseData.docid);
-      setRelevance(data.explanation);
-    } catch {
-      setRelevance("Could not fetch relevance.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const handleRelevance = async () => {
+  if (!userQuery) {
+    setRelevance("No search query provided.");
+    return;
+  }
+  setIsLoading(true);
+  setRelevance(null);
+  try {
+    const data = await getRelevance(userQuery, caseData.docid);
+    setRelevance(data.explanation);
+  } catch {
+    setRelevance("Could not fetch relevance.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <Card className="h-full flex flex-col hover:shadow-md border-l-4 border-primary/30">
@@ -80,7 +81,6 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
         </p>
 
         <div className="mt-3 space-y-2">
-          {/*
           <Button
             variant="outline"
             size="sm"
@@ -98,7 +98,6 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
               <p>{relevance}</p>
             </div>
           )}
-          */}
         </div>
       </CardContent>
 

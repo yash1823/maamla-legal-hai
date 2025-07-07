@@ -1,41 +1,56 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Query
 from utils.db import save_meta, get_meta, save_summary
 from utils.kanoon_api import fetch_case_by_docid
-from utils.sambonva_utils import hierarchical_relevance
+from utils.sambonva_utils import summarize_case, hierarchical_relevance
+from typing import List, Optional
+from utils.db import get_connection
 
 router = APIRouter()
 
-class MetaInput(BaseModel):
-    docid: str
-    query: str
-
-class SummaryInput(BaseModel):
-    summary: str
-
-@router.post("/meta")
-async def store_meta(meta: MetaInput):
-    save_meta(meta.docid, meta.query)
-    return {"status": "saved"}
-
-@router.get("/meta/{docid}")
-async def fetch_meta(docid: str):
-    meta = get_meta(docid)
-    if not meta:
-        raise HTTPException(status_code=404, detail="Metadata not found")
-    return meta
-
-@router.post("/meta/{docid}/summary")
-async def update_summary(docid: str, summary: SummaryInput):
-    save_summary(docid, summary.summary)
-    return {"status": "updated"}
-
 @router.get("/relevance/{docid}")
-async def get_relevance(docid: str):
+async def get_relevance(docid: str, query: str = Query(...)):
     meta = get_meta(docid)
-    if not meta or not meta.get("query"):
-        raise HTTPException(status_code=404, detail="Metadata or query not found")
 
-    case_text = await fetch_case_by_docid(docid)
-    relevance = await hierarchical_relevance(meta["query"], case_text)
-    return {"relevance": relevance}
+    if meta and meta.get("summary"):
+        summary = meta["summary"]
+        print(f"[API] Reusing summary from DB for docid={docid}")
+    else:
+        case = await fetch_case_by_docid(docid)
+        case_text = case.get("text") or case.get("clean_doc")
+        summary = await summarize_case(case_text)
+        save_summary(docid, summary)
+        print(f"[API] Summary generated and saved for docid={docid}")
+
+    if not meta or not meta.get("query"):
+        save_meta(docid, query)
+        print(f"[API] Query saved to DB for docid={docid}")
+    else:
+        print(f"[API] Query already exists for docid={docid}")
+
+    relevance = await hierarchical_relevance(query, summary)
+    print(f"[API] Relevance computed for docid={docid}")
+    return {"explanation": relevance}
+
+@router.get("/debug/db", tags=["Debug"])
+async def get_case_meta_data(
+    docid: Optional[str] = Query(None, description="Filter by specific docid"),
+    limit: Optional[int] = Query(None, description="Limit the number of results")
+):
+    query = "SELECT docid, query, modified_query, summary FROM case_meta"
+    params = []
+
+    if docid:
+        query += " WHERE docid = ?"
+        params.append(docid)
+
+    query += " ORDER BY rowid DESC"
+    if limit:
+        query += f" LIMIT {limit}"
+
+    with get_connection() as conn:
+        cursor = conn.execute(query, params)
+        rows = cursor.fetchall()
+        return [
+            {"docid": row[0], "query": row[1], "modified_query": row[2], "summary": row[3]}
+            for row in rows
+        ]

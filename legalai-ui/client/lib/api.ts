@@ -87,11 +87,9 @@ export async function summarizeCase(docid: string): Promise<{ summary: string }>
 }
 
 export async function getRelevance(query: string, docid: string): Promise<{ explanation: string }> {
-  const res = await fetch(`http://localhost:8001/relevance/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query, docid }),
-  });
+  const res = await fetch(`${API_BASE_URL}/relevance/${docid}?query=${encodeURIComponent(query)}`);
   if (!res.ok) throw new Error("Failed to get relevance");
   return res.json();
 }
+
+
