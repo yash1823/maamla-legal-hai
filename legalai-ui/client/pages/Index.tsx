@@ -6,7 +6,6 @@ import { FilterSection, FilterValues } from "@/components/FilterSection";
 import { ResultsList } from "@/components/ResultsList";
 import { searchCases } from "@/lib/api";
 import type { CaseResult, SearchRequest } from "@shared/api";
-import { saveMeta } from "../utils/meta";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
