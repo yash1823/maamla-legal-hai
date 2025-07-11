@@ -6,31 +6,29 @@ import type {
   CaseResult,
 } from "@shared/api";
 
-// Ensure trailing slashes are removed from base URL
+// ✅ Remove trailing slashes from base URL
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8001").replace(/\/+$/, "");
 
+// ✅ API error handler
 class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-  ) {
+  constructor(message: string, public status: number) {
     super(message);
     this.name = "ApiError";
   }
 }
 
-// Safely join base URL and endpoint
+// ✅ Safely join base URL and endpoint
 function joinUrl(base: string, endpoint: string): string {
   return `${base}/${endpoint.replace(/^\/+/, "")}`;
 }
 
+// ✅ Generic API request function
 async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
   const url = joinUrl(API_BASE_URL, endpoint);
-
-  console.log("Request URL:", url); // ✅ You can remove this in production
+  console.log("📡 Request URL:", url);
 
   const response = await fetch(url, {
     headers: {
@@ -41,26 +39,20 @@ async function apiRequest<T>(
   });
 
   if (!response.ok) {
-    throw new ApiError(
-      `API request failed: ${response.statusText}`,
-      response.status,
-    );
+    throw new ApiError(`API request failed: ${response.statusText}`, response.status);
   }
 
   return response.json();
 }
 
+// ✅ POST /search
 export async function searchCases(params: SearchRequest): Promise<SearchResponse> {
-  const url = joinUrl(API_BASE_URL, "/search");
-  const res = await fetch(url, {
+  const data = await apiRequest<any>("/search", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
   });
 
-  const data = await res.json();
-
-  const cases = data.docs.map((doc: any): CaseResult => ({
+  const cases: CaseResult[] = data.docs.map((doc: any) => ({
     docid: doc.tid.toString(),
     title: doc.title || "Untitled",
     docsource: doc.docsource || "Unknown Court",
@@ -75,28 +67,24 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
   };
 }
 
-export async function getCaseDetail(
-  docid: string,
-): Promise<CaseDetailResponse> {
-  console.log("getCaseDetail → docid:", docid); // ✅ for debugging
-  return apiRequest<CaseDetailResponse>(`/doc/${docid}`, {
+// ✅ POST /doc/:docid
+export async function getCaseDetail(docid: string): Promise<CaseDetailResponse> {
+  console.log("📄 getCaseDetail → docid:", docid);
+  return apiRequest<CaseDetailResponse>(`/doc/${encodeURIComponent(docid)}`, {
     method: "POST",
     body: JSON.stringify({ docid }),
   });
 }
 
+// ✅ POST /summarize/:docid
 export async function summarizeCase(docid: string): Promise<{ summary: string }> {
-  const url = joinUrl(API_BASE_URL, `/summarize/${docid}`);
-  const res = await fetch(url, {
+  return apiRequest<{ summary: string }>(`/summarize/${encodeURIComponent(docid)}`, {
     method: "POST",
   });
-  if (!res.ok) throw new Error("Failed to summarize case");
-  return res.json();
 }
 
+// ✅ GET /relevance/:docid?query=...
 export async function getRelevance(query: string, docid: string): Promise<{ explanation: string }> {
-  const url = joinUrl(API_BASE_URL, `/relevance/${docid}?query=${encodeURIComponent(query)}`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to get relevance");
-  return res.json();
+  const endpoint = `/relevance/${encodeURIComponent(docid)}?query=${encodeURIComponent(query)}`;
+  return apiRequest<{ explanation: string }>(endpoint);
 }
