@@ -2,5 +2,7 @@ fastapi
 uvicorn
 httpx
 python-dotenv
-pinecone[asyncio]
 openai
+asyncpg
+beautifulsoup4
+pydantic
