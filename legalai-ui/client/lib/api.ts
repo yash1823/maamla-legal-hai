@@ -8,7 +8,7 @@ import type {
 
 // You can update this base URL to point to your FastAPI backend
 const API_BASE_URL =
-  "http://127.0.0.1:8001";
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8001";
 
 class ApiError extends Error {
   constructor(
