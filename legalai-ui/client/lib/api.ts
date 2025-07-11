@@ -72,7 +72,7 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
 export async function getCaseDetail(
   docid: string,
 ): Promise<CaseDetailResponse> {
-  return apiRequest<CaseDetailResponse>(`${API_BASE_URL}/doc/${docid}`, {
+  return apiRequest<CaseDetailResponse>(`/doc/${docid}`, {
     method: "POST",
     body: JSON.stringify({ docid }),
   });
