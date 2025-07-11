@@ -11,7 +11,7 @@ from routes import meta
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
-    init_db()
+    await init_db()
     yield
     # Shutdown logic (if any)
 
@@ -69,42 +69,34 @@ async def get_case_by_docid(docid: str):
 
 @app.post("/summarize/{docid}")
 async def summarize_doc(docid: str):
-    meta_data = get_meta(docid)
+    meta_data = await get_meta(docid)
     if meta_data and meta_data.get("summary"):
-        print(f"[API] Reusing existing summary for docid={docid}")
         return {"summary": meta_data["summary"]}
 
     doc = await fetch_case_by_docid(docid)
     case_text = doc.get("text") or doc.get("clean_doc", "")
-    if len(case_text) > 30000:
-        case_text = case_text[:30000]
-        print(f"[API] Truncated long case text for docid={docid}")
-
+    # Use up to 128k tokens (approx 100k words)
+    if len(case_text) > 100000:
+        case_text = case_text[:100000]
     summary = await summarize_case(case_text)
-    save_summary(docid, summary)
-    print(f"[API] Summary generated and saved for docid={docid}")
+    await save_summary(docid, summary)
     return {"summary": summary}
 
 @app.post("/relevance/")
 async def case_relevance(request: RelevanceRequest):
-    meta_data = get_meta(request.docid)
-
+    meta_data = await get_meta(request.docid)
     if meta_data and meta_data.get("summary"):
         summary = meta_data["summary"]
-        print(f"[API] Reusing existing summary for docid={request.docid}")
     else:
         case = await fetch_case_by_docid(request.docid)
         case_text = case.get("text") or case.get("clean_doc", "")
+        if len(case_text) > 100000:
+            case_text = case_text[:100000]
         summary = await summarize_case(case_text)
-        save_summary(request.docid, summary)
-        print(f"[API] Summary generated and saved for docid={request.docid}")
+        await save_summary(request.docid, summary)
 
     if not meta_data or not meta_data.get("query"):
-        save_meta(request.docid, request.query, request.modified_query)
-        print(f"[API] Query saved for docid={request.docid}")
-    else:
-        print(f"[API] Query already exists for docid={request.docid}")
+        await save_meta(request.docid, request.query, request.modified_query)
 
     explanation = await hierarchical_relevance(request.query, summary)
-    print(f"[API] Relevance computed for docid={request.docid}")
     return {"explanation": explanation}
