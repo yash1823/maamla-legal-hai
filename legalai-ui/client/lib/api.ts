@@ -28,7 +28,6 @@ async function apiRequest<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const url = joinUrl(API_BASE_URL, endpoint);
-  console.log("📡 Request URL:", url);
 
   const response = await fetch(url, {
     headers: {
@@ -69,7 +68,6 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
 
 // ✅ POST /doc/:docid
 export async function getCaseDetail(docid: string): Promise<CaseDetailResponse> {
-  console.log("📄 getCaseDetail → docid:", docid);
   return apiRequest<CaseDetailResponse>(`/doc/${encodeURIComponent(docid)}`, {
     method: "POST",
     body: JSON.stringify({ docid }),
