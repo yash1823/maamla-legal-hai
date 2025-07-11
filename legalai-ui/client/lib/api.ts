@@ -45,7 +45,7 @@ async function apiRequest<T>(
 }
 
 export async function searchCases(params: SearchRequest): Promise<SearchResponse> {
-  const res = await fetch("http://localhost:8001/search", {
+  const res = await fetch(`${API_BASE_URL}/search`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
@@ -72,14 +72,14 @@ export async function searchCases(params: SearchRequest): Promise<SearchResponse
 export async function getCaseDetail(
   docid: string,
 ): Promise<CaseDetailResponse> {
-  return apiRequest<CaseDetailResponse>(`/doc/${docid}`, {
+  return apiRequest<CaseDetailResponse>(`${API_BASE_URL}/doc/${docid}`, {
     method: "POST",
     body: JSON.stringify({ docid }),
   });
 }
 
 export async function summarizeCase(docid: string): Promise<{ summary: string }> {
-  const res = await fetch(`http://localhost:8001/summarize/${docid}`, {
+  const res = await fetch(`${API_BASE_URL}/summarize/${docid}`, {
     method: "POST",
   });
   if (!res.ok) throw new Error("Failed to summarize case");
