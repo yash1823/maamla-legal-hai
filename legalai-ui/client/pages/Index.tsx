@@ -107,7 +107,17 @@ export default function Index() {
   };
 
   const handleViewDetails = (docid: string) => {
-    navigate(`/case/${docid}`);
+    // Pass current search state so it can be restored on back navigation
+    navigate(`/case/${docid}`, {
+      state: {
+        searchState: {
+          searchQuery,
+          filters,
+          results,
+          hasSearched,
+        },
+      },
+    });
   };
 
   const handleClearFilters = () => {
