@@ -203,9 +203,35 @@ export default function CaseDetailPage() {
                   <span>Published {formatDate(caseDetail.publish_date)}</span>
                 </div>
               </div>
+
+              {/* Summarize Button at the top */}
+              <div className="pt-4 border-t">
+                <Button
+                  onClick={handleSummarize}
+                  disabled={isSummarizing}
+                  size="lg"
+                  className="bg-legal-blue hover:bg-legal-blue/90"
+                >
+                  {isSummarizing ? "Summarizing..." : "✨ Summarize Case"}
+                </Button>
+              </div>
             </div>
           </CardHeader>
         </Card>
+
+        {/* Summary Display */}
+        {summary && (
+          <Card className="mb-8 bg-legal-blue-light/30 border-legal-blue/20">
+            <CardHeader>
+              <CardTitle className="text-lg text-legal-blue">
+                Case Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose dark:prose-invert">{summary}</div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Case Content */}
         <Card>
