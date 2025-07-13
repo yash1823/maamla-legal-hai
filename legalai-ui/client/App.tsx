@@ -29,6 +29,14 @@ const App = () => (
             <Route path="/case/:docid" element={<CaseDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route
+              path="/bookmarks"
+              element={
+                <ProtectedRoute>
+                  <BookmarksPage />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
