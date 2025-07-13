@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Scale } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { FilterSection, FilterValues } from "@/components/FilterSection";
@@ -9,21 +9,38 @@ import type { CaseResult, SearchRequest } from "@shared/api";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
-  year: "", 
+  year: "",
   maxCitations: "",
   title: "",
   author: "",
-  bench: ""
+  bench: "",
 };
 
 export default function Index() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const [results, setResults] = useState<CaseResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+
+  // Restore search state from navigation state
+  useEffect(() => {
+    if (location.state?.searchState) {
+      const {
+        searchQuery: prevQuery,
+        filters: prevFilters,
+        results: prevResults,
+        hasSearched: prevHasSearched,
+      } = location.state.searchState;
+      setSearchQuery(prevQuery);
+      setFilters(prevFilters);
+      setResults(prevResults);
+      setHasSearched(prevHasSearched);
+    }
+  }, [location.state]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -81,7 +98,7 @@ export default function Index() {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while searching"
+          : "An error occurred while searching",
       );
       setResults([]);
     } finally {
@@ -90,7 +107,17 @@ export default function Index() {
   };
 
   const handleViewDetails = (docid: string) => {
-    navigate(`/case/${docid}`);
+    // Pass current search state so it can be restored on back navigation
+    navigate(`/case/${docid}`, {
+      state: {
+        searchState: {
+          searchQuery,
+          filters,
+          results,
+          hasSearched,
+        },
+      },
+    });
   };
 
   const handleClearFilters = () => {
@@ -185,8 +212,7 @@ export default function Index() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              © 2025 Maamla Legal Hai. Search Indian legal cases and
-              judgments.
+              © 2025 Maamla Legal Hai. Search Indian legal cases and judgments.
             </p>
             <p className="mt-2">
               This platform provides access to legal information for research

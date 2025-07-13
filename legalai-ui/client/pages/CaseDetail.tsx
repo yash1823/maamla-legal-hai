@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -30,6 +30,7 @@ function transformCaseDetail(raw: any): CaseDetail {
 export default function CaseDetailPage() {
   const { docid } = useParams<{ docid: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [caseDetail, setCaseDetail] = useState<CaseDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export default function CaseDetailPage() {
     } catch (err) {
       console.error("Error fetching case detail:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to load case details"
+        err instanceof Error ? err.message : "Failed to load case details",
       );
     } finally {
       setIsLoading(false);
@@ -77,7 +78,12 @@ export default function CaseDetailPage() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    // If we have search state, navigate back to search page with restored state
+    if (location.state?.searchState) {
+      navigate("/", { state: { searchState: location.state.searchState } });
+    } else {
+      navigate(-1);
+    }
   };
 
   const handleSummarize = async () => {
@@ -197,9 +203,35 @@ export default function CaseDetailPage() {
                   <span>Published {formatDate(caseDetail.publish_date)}</span>
                 </div>
               </div>
+
+              {/* Summarize Button at the top */}
+              <div className="pt-4 border-t">
+                <Button
+                  onClick={handleSummarize}
+                  disabled={isSummarizing}
+                  size="lg"
+                  className="bg-legal-blue hover:bg-legal-blue/90"
+                >
+                  {isSummarizing ? "Summarizing..." : "✨ Summarize Case"}
+                </Button>
+              </div>
             </div>
           </CardHeader>
         </Card>
+
+        {/* Summary Display */}
+        {summary && (
+          <Card className="mb-8 bg-legal-blue-light/30 border-legal-blue/20">
+            <CardHeader>
+              <CardTitle className="text-lg text-legal-blue">
+                Case Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose dark:prose-invert">{summary}</div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Case Content */}
         <Card>
@@ -216,21 +248,6 @@ export default function CaseDetailPage() {
             />
           </CardContent>
         </Card>
-
-        {/* Summarize Button and Summary */}
-        <Button
-          onClick={handleSummarize}
-          disabled={isSummarizing}
-          className="mb-4"
-        >
-          {isSummarizing ? "Summarizing..." : "Summarize"}
-        </Button>
-        {summary && (
-          <div className="prose dark:prose-invert my-4 p-4 border rounded bg-muted/30">
-            <strong>Summary:</strong>
-            <div>{summary}</div>
-          </div>
-        )}
       </div>
     </div>
   );
