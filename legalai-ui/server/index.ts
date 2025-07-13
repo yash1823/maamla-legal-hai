@@ -2,6 +2,12 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleLogin, handleSignup, handleGetUser } from "./routes/auth";
+import {
+  handleGetBookmarks,
+  handleAddBookmark,
+  handleRemoveBookmark,
+  handleCheckBookmark,
+} from "./routes/bookmarks";
 import { authenticateToken } from "./middleware/auth";
 
 export function createServer() {
