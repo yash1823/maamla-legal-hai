@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Scale } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { FilterSection, FilterValues } from "@/components/FilterSection";
@@ -9,11 +9,11 @@ import type { CaseResult, SearchRequest } from "@shared/api";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
-  year: "", 
+  year: "",
   maxCitations: "",
   title: "",
   author: "",
-  bench: ""
+  bench: "",
 };
 
 export default function Index() {
@@ -81,7 +81,7 @@ export default function Index() {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while searching"
+          : "An error occurred while searching",
       );
       setResults([]);
     } finally {
@@ -185,8 +185,7 @@ export default function Index() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              © 2025 Maamla Legal Hai. Search Indian legal cases and
-              judgments.
+              © 2025 Maamla Legal Hai. Search Indian legal cases and judgments.
             </p>
             <p className="mt-2">
               This platform provides access to legal information for research
