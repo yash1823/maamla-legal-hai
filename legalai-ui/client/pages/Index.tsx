@@ -18,12 +18,29 @@ const initialFilters: FilterValues = {
 
 export default function Index() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const [results, setResults] = useState<CaseResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+
+  // Restore search state from navigation state
+  useEffect(() => {
+    if (location.state?.searchState) {
+      const {
+        searchQuery: prevQuery,
+        filters: prevFilters,
+        results: prevResults,
+        hasSearched: prevHasSearched,
+      } = location.state.searchState;
+      setSearchQuery(prevQuery);
+      setFilters(prevFilters);
+      setResults(prevResults);
+      setHasSearched(prevHasSearched);
+    }
+  }, [location.state]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
