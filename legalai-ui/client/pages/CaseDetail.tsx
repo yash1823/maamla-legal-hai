@@ -248,21 +248,6 @@ export default function CaseDetailPage() {
             />
           </CardContent>
         </Card>
-
-        {/* Summarize Button and Summary */}
-        <Button
-          onClick={handleSummarize}
-          disabled={isSummarizing}
-          className="mb-4"
-        >
-          {isSummarizing ? "Summarizing..." : "Summarize"}
-        </Button>
-        {summary && (
-          <div className="prose dark:prose-invert my-4 p-4 border rounded bg-muted/30">
-            <strong>Summary:</strong>
-            <div>{summary}</div>
-          </div>
-        )}
       </div>
     </div>
   );
