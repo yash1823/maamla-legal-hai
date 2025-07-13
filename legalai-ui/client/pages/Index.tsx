@@ -4,6 +4,7 @@ import { Scale } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { FilterSection, FilterValues } from "@/components/FilterSection";
 import { ResultsList } from "@/components/ResultsList";
+import { UserMenu } from "@/components/UserMenu";
 import { searchCases } from "@/lib/api";
 import type { CaseResult, SearchRequest } from "@shared/api";
 
