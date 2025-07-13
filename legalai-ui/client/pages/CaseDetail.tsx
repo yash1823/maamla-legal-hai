@@ -78,7 +78,12 @@ export default function CaseDetailPage() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    // If we have search state, navigate back to search page with restored state
+    if (location.state?.searchState) {
+      navigate("/", { state: { searchState: location.state.searchState } });
+    } else {
+      navigate(-1);
+    }
   };
 
   const handleSummarize = async () => {
