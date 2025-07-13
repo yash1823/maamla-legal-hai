@@ -30,6 +30,7 @@ function transformCaseDetail(raw: any): CaseDetail {
 export default function CaseDetailPage() {
   const { docid } = useParams<{ docid: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [caseDetail, setCaseDetail] = useState<CaseDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
