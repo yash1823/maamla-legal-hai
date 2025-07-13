@@ -30,5 +30,15 @@ export function createServer() {
   app.post("/api/auth/signup", handleSignup);
   app.get("/api/auth/me", authenticateToken, handleGetUser);
 
+  // Bookmark routes
+  app.get("/api/bookmarks", authenticateToken, handleGetBookmarks);
+  app.post("/api/bookmarks", authenticateToken, handleAddBookmark);
+  app.delete("/api/bookmarks/:docid", authenticateToken, handleRemoveBookmark);
+  app.get(
+    "/api/bookmarks/check/:docid",
+    authenticateToken,
+    handleCheckBookmark,
+  );
+
   return app;
 }
