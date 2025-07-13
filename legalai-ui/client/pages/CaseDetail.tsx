@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -57,7 +57,7 @@ export default function CaseDetailPage() {
     } catch (err) {
       console.error("Error fetching case detail:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to load case details"
+        err instanceof Error ? err.message : "Failed to load case details",
       );
     } finally {
       setIsLoading(false);
