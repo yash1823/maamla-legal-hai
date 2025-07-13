@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handleLogin, handleSignup, handleGetUser } from "./routes/auth";
+import { authenticateToken } from "./middleware/auth";
 
 export function createServer() {
   const app = express();
