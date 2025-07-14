@@ -9,6 +9,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BookmarkButton } from "./BookmarkButton";
 import type { CaseResult } from "@shared/api";
 import { getRelevance } from "@/lib/api";
 
@@ -18,7 +19,11 @@ interface CaseCardProps {
   userQuery?: string;
 }
 
-export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardProps) {
+export function CaseCard({
+  case: caseData,
+  onViewDetails,
+  userQuery,
+}: CaseCardProps) {
   const [relevance, setRelevance] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,23 +39,22 @@ export function CaseCard({ case: caseData, onViewDetails, userQuery }: CaseCardP
     }
   };
 
-const handleRelevance = async () => {
-  if (!userQuery) {
-    setRelevance("No search query provided.");
-    return;
-  }
-  setIsLoading(true);
-  setRelevance(null);
-  try {
-    const data = await getRelevance(userQuery, caseData.docid);
-    setRelevance(data.explanation);
-  } catch {
-    setRelevance("Could not fetch relevance.");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  const handleRelevance = async () => {
+    if (!userQuery) {
+      setRelevance("No search query provided.");
+      return;
+    }
+    setIsLoading(true);
+    setRelevance(null);
+    try {
+      const data = await getRelevance(userQuery, caseData.docid);
+      setRelevance(data.explanation);
+    } catch {
+      setRelevance("Could not fetch relevance.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card className="h-full flex flex-col hover:shadow-md border-l-4 border-primary/30">
@@ -101,14 +105,20 @@ const handleRelevance = async () => {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-4">
+      <CardFooter className="pt-4 flex gap-2">
         <Button
           onClick={() => onViewDetails(caseData.docid)}
-          className="w-full flex items-center gap-2"
+          className="flex-1 flex items-center gap-2"
         >
           <FileText className="h-4 w-4" />
           View Details
         </Button>
+        <BookmarkButton
+          docid={caseData.docid}
+          title={caseData.title}
+          court={caseData.docsource}
+          date={caseData.date}
+        />
       </CardFooter>
     </Card>
   );
