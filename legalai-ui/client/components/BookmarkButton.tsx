@@ -3,7 +3,7 @@ import { Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { addBookmark } from "@/lib/api";
+import { addBookmark, removeBookmark } from "@/lib/api";
 
 interface BookmarkButtonProps {
   docid: string;
@@ -64,7 +64,7 @@ export function BookmarkButton({
           description: "Case added to your bookmarks",
         });
       } else {
-        // For now, just toggle the state since there's no remove endpoint in the backend
+        await removeBookmark(token, docid);
         setIsBookmarked(false);
         toast({
           title: "Bookmark Removed",
