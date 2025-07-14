@@ -9,3 +9,4 @@ pydantic
 bcrypt
 python-jose[cryptography]
 pydantic[email]
+jwt
