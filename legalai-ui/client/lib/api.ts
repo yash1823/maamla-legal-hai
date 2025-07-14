@@ -81,6 +81,7 @@ export async function searchCases(
 export async function getCaseDetail(
   docid: string,
 ): Promise<CaseDetailResponse> {
+  console.log("📄 getCaseDetail → docid:", docid);
   return apiRequest<CaseDetailResponse>(`/doc/${encodeURIComponent(docid)}`, {
     method: "POST",
     body: JSON.stringify({ docid }),
