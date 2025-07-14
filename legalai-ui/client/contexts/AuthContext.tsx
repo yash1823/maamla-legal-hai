@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { loginUser, signupUser, getCurrentUser } from "@/lib/api";
 
 export interface User {
   id: string;
@@ -55,18 +56,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      const response = await fetch("/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData.user);
-      } else {
-        localStorage.removeItem("auth_token");
-      }
+      const userData = await getCurrentUser(token);
+      setUser(userData);
     } catch (error) {
       console.error("Auth check failed:", error);
       localStorage.removeItem("auth_token");
@@ -76,41 +67,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Login failed");
-    }
-
-    const data = await response.json();
+    const data = await loginUser(email, password);
     localStorage.setItem("auth_token", data.token);
-    setUser(data.user);
+
+    // Fetch user data after login
+    const userData = await getCurrentUser(data.token);
+    setUser(userData);
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, name }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Signup failed");
-    }
-
-    const data = await response.json();
+    const data = await signupUser(email, password, name);
     localStorage.setItem("auth_token", data.token);
-    setUser(data.user);
+
+    // Fetch user data after signup
+    const userData = await getCurrentUser(data.token);
+    setUser(userData);
   };
 
   const logout = () => {
