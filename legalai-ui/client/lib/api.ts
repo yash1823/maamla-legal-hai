@@ -106,3 +106,60 @@ export async function getRelevance(
   const endpoint = `/relevance/${encodeURIComponent(docid)}?query=${encodeURIComponent(query)}`;
   return apiRequest<{ explanation: string }>(endpoint);
 }
+
+// ✅ Authentication API functions
+export async function loginUser(
+  email: string,
+  password: string,
+): Promise<{ token: string }> {
+  return apiRequest<{ token: string }>("/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function signupUser(
+  email: string,
+  password: string,
+  name: string,
+): Promise<{ token: string }> {
+  return apiRequest<{ token: string }>("/signup", {
+    method: "POST",
+    body: JSON.stringify({ email, password, name }),
+  });
+}
+
+export async function getCurrentUser(
+  token: string,
+): Promise<{ id: string; email: string; name: string }> {
+  return apiRequest<{ id: string; email: string; name: string }>("/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+// ✅ Bookmark API functions
+export async function addBookmark(
+  token: string,
+  docid: string,
+  title: string,
+  court: string,
+  date: string,
+): Promise<{ message: string }> {
+  return apiRequest<{ message: string }>("/bookmark", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ docid, title, court, date }),
+  });
+}
+
+export async function getBookmarks(token: string): Promise<any[]> {
+  return apiRequest<any[]>("/bookmarks", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
