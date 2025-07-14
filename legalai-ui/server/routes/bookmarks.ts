@@ -37,11 +37,8 @@ export const handleGetBookmarks: RequestHandler = (req: AuthRequest, res) => {
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
 
-    const response: BookmarksResponse = {
-      bookmarks: userBookmarks,
-    };
-
-    res.json(response);
+    // Frontend expects array directly
+    res.json(userBookmarks);
   } catch (error) {
     console.error("Get bookmarks error:", error);
     res.status(500).json({ message: "Internal server error" });
