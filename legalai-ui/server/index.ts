@@ -8,6 +8,12 @@ import {
   handleRemoveBookmark,
   handleCheckBookmark,
 } from "./routes/bookmarks";
+import {
+  handleSearch,
+  handleGetCaseDetail,
+  handleSummarizeCase,
+  handleGetRelevance,
+} from "./routes/search";
 import { authenticateToken } from "./middleware/auth";
 
 export function createServer() {
@@ -25,20 +31,21 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // Authentication routes
-  app.post("/api/auth/login", handleLogin);
-  app.post("/api/auth/signup", handleSignup);
-  app.get("/api/auth/me", authenticateToken, handleGetUser);
+  // Authentication routes (match frontend expectations)
+  app.post("/api/login", handleLogin);
+  app.post("/api/signup", handleSignup);
+  app.get("/api/me", authenticateToken, handleGetUser);
 
-  // Bookmark routes
+  // Bookmark routes (match frontend expectations)
   app.get("/api/bookmarks", authenticateToken, handleGetBookmarks);
-  app.post("/api/bookmarks", authenticateToken, handleAddBookmark);
-  app.delete("/api/bookmarks/:docid", authenticateToken, handleRemoveBookmark);
-  app.get(
-    "/api/bookmarks/check/:docid",
-    authenticateToken,
-    handleCheckBookmark,
-  );
+  app.post("/api/bookmark", authenticateToken, handleAddBookmark);
+  app.delete("/api/bookmark", authenticateToken, handleRemoveBookmark);
+
+  // Search and case routes
+  app.post("/api/search", handleSearch);
+  app.post("/api/doc/:docid", handleGetCaseDetail);
+  app.post("/api/summarize/:docid", handleSummarizeCase);
+  app.get("/api/relevance/:docid", handleGetRelevance);
 
   return app;
 }

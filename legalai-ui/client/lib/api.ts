@@ -8,7 +8,7 @@ import type {
 
 // ✅ Remove trailing slashes from base URL
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8001"
 ).replace(/\/+$/, "");
 
 // ✅ API error handler
@@ -33,6 +33,7 @@ async function apiRequest<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const url = joinUrl(API_BASE_URL, endpoint);
+  console.log("📡 Request URL:", url);
 
   const response = await fetch(url, {
     headers: {
@@ -61,18 +62,18 @@ export async function searchCases(
     body: JSON.stringify(params),
   });
 
-  const cases: CaseResult[] = (data.cases || []).map((doc: any) => ({
-    docid: doc.docid || doc.tid?.toString() || "",
+  const cases: CaseResult[] = data.docs.map((doc: any) => ({
+    docid: doc.tid.toString(),
     title: doc.title || "Untitled",
     docsource: doc.docsource || "Unknown Court",
-    date: doc.date || doc.publishdate || "Unknown Date",
-    snippet: doc.snippet || doc.fragment || "",
+    date: doc.publishdate || "Unknown Date",
+    snippet: doc.fragment || "",
     numcites: doc.numcites || 0,
   }));
 
   return {
     cases,
-    total: data.total || cases.length,
+    total: cases.length,
   };
 }
 
@@ -80,6 +81,7 @@ export async function searchCases(
 export async function getCaseDetail(
   docid: string,
 ): Promise<CaseDetailResponse> {
+  console.log("📄 getCaseDetail → docid:", docid);
   return apiRequest<CaseDetailResponse>(`/doc/${encodeURIComponent(docid)}`, {
     method: "POST",
     body: JSON.stringify({ docid }),

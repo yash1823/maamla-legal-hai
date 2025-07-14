@@ -54,12 +54,8 @@ export const handleLogin: RequestHandler = async (req, res) => {
 
     const token = generateToken(userResponse);
 
-    const response: AuthResponse = {
-      user: userResponse,
-      token,
-    };
-
-    res.json(response);
+    // Frontend expects just { token: string }
+    res.json({ token });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -115,12 +111,8 @@ export const handleSignup: RequestHandler = async (req, res) => {
 
     const token = generateToken(userResponse);
 
-    const response: AuthResponse = {
-      user: userResponse,
-      token,
-    };
-
-    res.status(201).json(response);
+    // Frontend expects just { token: string }
+    res.status(201).json({ token });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -133,11 +125,8 @@ export const handleGetUser: RequestHandler = (req: AuthRequest, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const response: UserResponse = {
-      user: req.user,
-    };
-
-    res.json(response);
+    // Frontend expects user object directly
+    res.json(req.user);
   } catch (error) {
     console.error("Get user error:", error);
     res.status(500).json({ message: "Internal server error" });

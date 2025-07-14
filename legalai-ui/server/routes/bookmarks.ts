@@ -37,11 +37,8 @@ export const handleGetBookmarks: RequestHandler = (req: AuthRequest, res) => {
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
 
-    const response: BookmarksResponse = {
-      bookmarks: userBookmarks,
-    };
-
-    res.json(response);
+    // Frontend expects array directly
+    res.json(userBookmarks);
   } catch (error) {
     console.error("Get bookmarks error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -84,16 +81,8 @@ export const handleAddBookmark: RequestHandler = (req: AuthRequest, res) => {
     bookmarks.push(newBookmark);
     nextBookmarkId++;
 
-    const response: Bookmark = {
-      id: newBookmark.id,
-      docid: newBookmark.docid,
-      title: newBookmark.title,
-      court: newBookmark.court,
-      date: newBookmark.date,
-      created_at: newBookmark.createdAt.toISOString(),
-    };
-
-    res.status(201).json(response);
+    // Frontend expects simple message
+    res.status(201).json({ message: "Bookmark added successfully" });
   } catch (error) {
     console.error("Add bookmark error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -106,9 +95,9 @@ export const handleRemoveBookmark: RequestHandler = (req: AuthRequest, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const { docid } = req.params;
+    const { docid } = req.query;
 
-    if (!docid) {
+    if (!docid || typeof docid !== "string") {
       return res.status(400).json({ message: "Document ID is required" });
     }
 
