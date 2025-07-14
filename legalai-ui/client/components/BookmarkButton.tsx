@@ -64,7 +64,7 @@ export function BookmarkButton({
           description: "Case added to your bookmarks",
         });
       } else {
-        // For now, just toggle the state since there's no remove endpoint in the backend
+        await removeBookmark(token, docid);
         setIsBookmarked(false);
         toast({
           title: "Bookmark Removed",
