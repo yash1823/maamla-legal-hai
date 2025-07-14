@@ -54,12 +54,8 @@ export const handleLogin: RequestHandler = async (req, res) => {
 
     const token = generateToken(userResponse);
 
-    const response: AuthResponse = {
-      user: userResponse,
-      token,
-    };
-
-    res.json(response);
+    // Frontend expects just { token: string }
+    res.json({ token });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
