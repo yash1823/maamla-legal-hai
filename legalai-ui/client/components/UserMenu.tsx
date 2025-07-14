@@ -1,0 +1,69 @@
+import { Link, useNavigate } from "react-router-dom";
+import { User, Heart, LogOut, LogIn, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+
+export function UserMenu() {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to="/login">
+            <LogIn className="h-4 w-4 mr-2" />
+            Sign In
+          </Link>
+        </Button>
+        <Button size="sm" asChild>
+          <Link to="/signup">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Sign Up
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+          <User className="h-4 w-4" />
+          <span className="hidden sm:inline">{user?.name}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <div className="px-2 py-1.5 text-sm font-medium">{user?.name}</div>
+        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+          {user?.email}
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/bookmarks" className="flex items-center">
+            <Heart className="h-4 w-4 mr-2" />
+            My Bookmarks
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+          <LogOut className="h-4 w-4 mr-2" />
+          Sign Out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

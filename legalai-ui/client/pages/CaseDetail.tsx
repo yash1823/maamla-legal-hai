@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BookmarkButton } from "@/components/BookmarkButton";
 import { getCaseDetail, summarizeCase } from "@/lib/api";
 import type { CaseDetail } from "@shared/api";
 
@@ -188,9 +189,17 @@ export default function CaseDetailPage() {
                 <CardTitle className="text-2xl font-bold leading-tight flex-1">
                   {caseDetail.title}
                 </CardTitle>
-                <Badge variant="secondary" className="text-sm px-3 py-1">
-                  {caseDetail.citation_count} citations
-                </Badge>
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="text-sm px-3 py-1">
+                    {caseDetail.citation_count} citations
+                  </Badge>
+                  <BookmarkButton
+                    docid={docid!}
+                    title={caseDetail.title}
+                    court={caseDetail.court}
+                    date={caseDetail.publish_date}
+                  />
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-6 text-muted-foreground">

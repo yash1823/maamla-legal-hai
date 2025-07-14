@@ -4,6 +4,7 @@ import { Scale } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { FilterSection, FilterValues } from "@/components/FilterSection";
 import { ResultsList } from "@/components/ResultsList";
+import { UserMenu } from "@/components/UserMenu";
 import { searchCases } from "@/lib/api";
 import type { CaseResult, SearchRequest } from "@shared/api";
 
@@ -163,7 +164,7 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-primary rounded-lg">
                 <Scale className="h-6 w-6 text-primary-foreground" />
@@ -177,6 +178,7 @@ export default function Index() {
                 </p>
               </div>
             </div>
+            <UserMenu />
           </div>
         </div>
       </header>

@@ -46,9 +46,57 @@ export interface CaseDetail {
   clean_doc: string;
 }
 
-
 export interface CaseDetailResponse {
   case: CaseDetail;
+}
+
+/**
+ * Authentication types
+ */
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface SignupRequest {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface UserResponse {
+  user: User;
+}
+
+/**
+ * Bookmarks types
+ */
+export interface BookmarkRequest {
+  docid: string;
+}
+
+export interface Bookmark {
+  id: string;
+  docid: string;
+  title: string;
+  court: string;
+  date: string;
+  created_at: string;
+}
+
+export interface BookmarksResponse {
+  bookmarks: Bookmark[];
 }
 
 /**
