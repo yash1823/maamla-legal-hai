@@ -36,15 +36,10 @@ export function createServer() {
   app.post("/api/signup", handleSignup);
   app.get("/api/me", authenticateToken, handleGetUser);
 
-  // Bookmark routes
+  // Bookmark routes (match frontend expectations)
   app.get("/api/bookmarks", authenticateToken, handleGetBookmarks);
-  app.post("/api/bookmarks", authenticateToken, handleAddBookmark);
-  app.delete("/api/bookmarks/:docid", authenticateToken, handleRemoveBookmark);
-  app.get(
-    "/api/bookmarks/check/:docid",
-    authenticateToken,
-    handleCheckBookmark,
-  );
+  app.post("/api/bookmark", authenticateToken, handleAddBookmark);
+  app.delete("/api/bookmark", authenticateToken, handleRemoveBookmark);
 
   // Search and case routes
   app.post("/api/search", handleSearch);
