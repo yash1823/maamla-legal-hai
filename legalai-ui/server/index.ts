@@ -8,6 +8,12 @@ import {
   handleRemoveBookmark,
   handleCheckBookmark,
 } from "./routes/bookmarks";
+import {
+  handleSearch,
+  handleGetCaseDetail,
+  handleSummarizeCase,
+  handleGetRelevance,
+} from "./routes/search";
 import { authenticateToken } from "./middleware/auth";
 
 export function createServer() {
