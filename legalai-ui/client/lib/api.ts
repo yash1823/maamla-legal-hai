@@ -61,18 +61,29 @@ export async function searchCases(
     body: JSON.stringify(params),
   });
 
-  const cases: CaseResult[] = (data.cases || []).map((doc: any) => ({
+  // Handle the real API response structure
+  const docs = data.docs || data.cases || [];
+  const cases: CaseResult[] = docs.map((doc: any) => ({
     docid: doc.docid || doc.tid?.toString() || "",
     title: doc.title || "Untitled",
     docsource: doc.docsource || "Unknown Court",
     date: doc.date || doc.publishdate || "Unknown Date",
-    snippet: doc.snippet || doc.fragment || "",
+    snippet: doc.snippet || doc.headline || doc.fragment || "",
     numcites: doc.numcites || 0,
   }));
 
+  // Parse total from "found" string like "1 - 10 of 32"
+  let total = cases.length;
+  if (data.found) {
+    const match = data.found.match(/of (\d+)/);
+    if (match) {
+      total = parseInt(match[1], 10);
+    }
+  }
+
   return {
     cases,
-    total: data.total || cases.length,
+    total,
   };
 }
 
