@@ -106,9 +106,9 @@ export const handleRemoveBookmark: RequestHandler = (req: AuthRequest, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const { docid } = req.params;
+    const { docid } = req.query;
 
-    if (!docid) {
+    if (!docid || typeof docid !== "string") {
       return res.status(400).json({ message: "Document ID is required" });
     }
 
