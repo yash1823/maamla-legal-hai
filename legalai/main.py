@@ -6,7 +6,10 @@ from models.schemas import SearchFilters, SearchQuery, RelevanceRequest
 from utils.kanoon_api import fetch_case_by_docid, fetch_cases
 from utils.sambonva_utils import extract_keywords, hierarchical_relevance, summarize_case, explain_relevance
 from utils.db import get_meta, init_db, save_meta, save_summary
-from routes import meta
+from routes import case_routes, meta
+from routes.user_routes import router as user_router
+from routes.case_routes import router as case_routes  # ✅ CORRECT
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,10 +31,13 @@ app.add_middleware(
 
 # Include sub-routers
 app.include_router(meta.router)
+app.include_router(user_router)
+app.include_router(case_routes)
 
 # Routes
 @app.post("/search")
 async def search_cases(search_query: SearchQuery):
+    print("Search endpoint")
     keywords = await extract_keywords(search_query.query)
     modified_query = " ".join(keywords) if keywords else search_query.query
 

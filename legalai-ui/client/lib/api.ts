@@ -153,6 +153,7 @@ export async function addBookmark(
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json", 
     },
     body: JSON.stringify({ docid, title, court, date }),
   });

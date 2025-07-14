@@ -6,3 +6,5 @@ openai
 asyncpg
 beautifulsoup4
 pydantic
+bcrypt
+python-jose[cryptography]
