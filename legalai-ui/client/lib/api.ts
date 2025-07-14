@@ -52,22 +52,14 @@ async function apiRequest<T>(
   return response.json();
 }
 
-// ✅ GET /search
+// ✅ POST /search
 export async function searchCases(
   params: SearchRequest,
 ): Promise<SearchResponse> {
-  const searchParams = new URLSearchParams();
-  searchParams.append("query", params.query);
-
-  if (params.filters) {
-    Object.entries(params.filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        searchParams.append(key, value.toString());
-      }
-    });
-  }
-
-  const data = await apiRequest<any>(`/search?${searchParams.toString()}`);
+  const data = await apiRequest<any>("/search", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
 
   const cases: CaseResult[] = (data.cases || []).map((doc: any) => ({
     docid: doc.docid || doc.tid?.toString() || "",
