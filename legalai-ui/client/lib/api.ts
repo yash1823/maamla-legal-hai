@@ -163,3 +163,18 @@ export async function getBookmarks(token: string): Promise<any[]> {
     },
   });
 }
+
+export async function removeBookmark(
+  token: string,
+  docid: string,
+): Promise<{ message: string }> {
+  return apiRequest<{ message: string }>(
+    `/bookmark?docid=${encodeURIComponent(docid)}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
