@@ -125,11 +125,8 @@ export const handleGetUser: RequestHandler = (req: AuthRequest, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const response: UserResponse = {
-      user: req.user,
-    };
-
-    res.json(response);
+    // Frontend expects user object directly
+    res.json(req.user);
   } catch (error) {
     console.error("Get user error:", error);
     res.status(500).json({ message: "Internal server error" });
