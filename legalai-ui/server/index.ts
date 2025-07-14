@@ -31,10 +31,10 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // Authentication routes
-  app.post("/api/auth/login", handleLogin);
-  app.post("/api/auth/signup", handleSignup);
-  app.get("/api/auth/me", authenticateToken, handleGetUser);
+  // Authentication routes (match frontend expectations)
+  app.post("/api/login", handleLogin);
+  app.post("/api/signup", handleSignup);
+  app.get("/api/me", authenticateToken, handleGetUser);
 
   // Bookmark routes
   app.get("/api/bookmarks", authenticateToken, handleGetBookmarks);
