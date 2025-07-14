@@ -46,5 +46,11 @@ export function createServer() {
     handleCheckBookmark,
   );
 
+  // Search and case routes
+  app.post("/api/search", handleSearch);
+  app.post("/api/doc/:docid", handleGetCaseDetail);
+  app.post("/api/summarize/:docid", handleSummarizeCase);
+  app.get("/api/relevance/:docid", handleGetRelevance);
+
   return app;
 }
