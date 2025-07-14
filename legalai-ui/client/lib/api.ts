@@ -8,7 +8,7 @@ import type {
 
 // ✅ Remove trailing slashes from base URL
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8001"
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8001"
 ).replace(/\/+$/, "");
 
 // ✅ API error handler
@@ -33,6 +33,7 @@ async function apiRequest<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const url = joinUrl(API_BASE_URL, endpoint);
+  console.log("📡 Request URL:", url);
 
   const response = await fetch(url, {
     headers: {
@@ -61,29 +62,18 @@ export async function searchCases(
     body: JSON.stringify(params),
   });
 
-  // Handle the real API response structure
-  const docs = data.docs || data.cases || [];
-  const cases: CaseResult[] = docs.map((doc: any) => ({
-    docid: doc.docid || doc.tid?.toString() || "",
+  const cases: CaseResult[] = data.docs.map((doc: any) => ({
+    docid: doc.tid.toString(),
     title: doc.title || "Untitled",
     docsource: doc.docsource || "Unknown Court",
-    date: doc.date || doc.publishdate || "Unknown Date",
-    snippet: doc.snippet || doc.headline || doc.fragment || "",
+    date: doc.publishdate || "Unknown Date",
+    snippet: doc.fragment || "",
     numcites: doc.numcites || 0,
   }));
 
-  // Parse total from "found" string like "1 - 10 of 32"
-  let total = cases.length;
-  if (data.found) {
-    const match = data.found.match(/of (\d+)/);
-    if (match) {
-      total = parseInt(match[1], 10);
-    }
-  }
-
   return {
     cases,
-    total,
+    total: cases.length,
   };
 }
 
