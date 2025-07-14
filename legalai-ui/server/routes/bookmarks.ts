@@ -81,16 +81,8 @@ export const handleAddBookmark: RequestHandler = (req: AuthRequest, res) => {
     bookmarks.push(newBookmark);
     nextBookmarkId++;
 
-    const response: Bookmark = {
-      id: newBookmark.id,
-      docid: newBookmark.docid,
-      title: newBookmark.title,
-      court: newBookmark.court,
-      date: newBookmark.date,
-      created_at: newBookmark.createdAt.toISOString(),
-    };
-
-    res.status(201).json(response);
+    // Frontend expects simple message
+    res.status(201).json({ message: "Bookmark added successfully" });
   } catch (error) {
     console.error("Add bookmark error:", error);
     res.status(500).json({ message: "Internal server error" });
