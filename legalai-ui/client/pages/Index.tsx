@@ -163,22 +163,28 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-3 py-3 sm:px-4 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-primary rounded-lg">
-                <Scale className="h-6 w-6 text-primary-foreground" />
+            <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+              <div className="p-1.5 sm:p-2 bg-primary rounded-lg flex-shrink-0">
+                <Scale className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                  Maamla Legal Hai
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">
+                  <span className="sm:hidden">Maamla Legal</span>
+                  <span className="hidden sm:inline">Maamla Legal Hai</span>
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                   Search Indian legal cases and judgments
+                </p>
+                <p className="text-xs text-muted-foreground sm:hidden">
+                  Legal case search
                 </p>
               </div>
             </div>
-            <UserMenu />
+            <div className="flex-shrink-0 ml-2">
+              <UserMenu />
+            </div>
           </div>
         </div>
       </header>
