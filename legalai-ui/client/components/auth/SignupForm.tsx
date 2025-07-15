@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const signupSchema = z
@@ -50,7 +50,21 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
       await signup(data.email, data.password, data.name);
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Signup failed");
+      // Handle specific email already registered error
+      if (err instanceof Error) {
+        if (
+          err.message.includes("Email already registered") ||
+          err.message.includes("already registered")
+        ) {
+          setError(
+            "This email is already registered. Please log in or use a different email.",
+          );
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError("Signup failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -59,8 +73,9 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="ml-2">{error}</AlertDescription>
         </Alert>
       )}
 
@@ -85,10 +100,23 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           type="email"
           placeholder="Enter your email"
           {...register("email")}
-          className={errors.email ? "border-destructive" : ""}
+          className={
+            errors.email || (error && error.includes("email"))
+              ? "border-destructive"
+              : ""
+          }
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-sm text-destructive flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" />
+            {errors.email.message}
+          </p>
+        )}
+        {error && error.includes("email") && !errors.email && (
+          <p className="text-sm text-destructive flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" />
+            {error}
+          </p>
         )}
       </div>
 

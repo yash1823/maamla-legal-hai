@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { addBookmark, removeBookmark } from "@/lib/api";
+import { addBookmark, removeBookmark, checkBookmarkStatus } from "@/lib/api";
 
 interface BookmarkButtonProps {
   docid: string;
@@ -28,14 +28,26 @@ export function BookmarkButton({
   // Check if case is bookmarked on component mount
   useEffect(() => {
     if (isAuthenticated && user) {
-      checkBookmarkStatus();
+      checkCurrentBookmarkStatus();
+    } else {
+      setIsBookmarked(false);
     }
   }, [isAuthenticated, user, docid]);
 
-  const checkBookmarkStatus = async () => {
-    // For now, we'll skip checking bookmark status
-    // The backend doesn't have a check endpoint yet
-    // You could implement this if needed
+  const checkCurrentBookmarkStatus = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) return;
+
+      const { isBookmarked: bookmarkStatus } = await checkBookmarkStatus(
+        token,
+        docid,
+      );
+      setIsBookmarked(bookmarkStatus);
+    } catch (error) {
+      console.error("Error checking bookmark status:", error);
+      setIsBookmarked(false);
+    }
   };
 
   const handleBookmarkToggle = async () => {
@@ -98,7 +110,9 @@ export function BookmarkButton({
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
-        <Heart className={`h-4 w-4 ${isBookmarked ? "fill-current" : ""}`} />
+        <Star
+          className={`h-4 w-4 ${isBookmarked ? "fill-current text-yellow-500" : ""}`}
+        />
       )}
       <span className="ml-2">{isBookmarked ? "Bookmarked" : "Bookmark"}</span>
     </Button>

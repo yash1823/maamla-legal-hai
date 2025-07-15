@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { loginUser, signupUser, getCurrentUser } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
 
 export interface User {
   id: string;
@@ -73,6 +74,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Fetch user data after login
     const userData = await getCurrentUser(data.token);
     setUser(userData);
+
+    // Show success toast
+    toast({
+      title: "✅ Successfully logged in!",
+      description: `Welcome back, ${userData.name}!`,
+      duration: 4000,
+    });
   };
 
   const signup = async (email: string, password: string, name: string) => {
@@ -82,11 +90,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Fetch user data after signup
     const userData = await getCurrentUser(data.token);
     setUser(userData);
+
+    // Show success toast
+    toast({
+      title: "✅ Account created successfully!",
+      description: `Welcome to the platform, ${userData.name}!`,
+      duration: 4000,
+    });
   };
 
   const logout = () => {
+    const userName = user?.name || "";
     localStorage.removeItem("auth_token");
     setUser(null);
+
+    // Show success toast
+    toast({
+      title: "✅ You have been logged out",
+      description: userName ? `Goodbye, ${userName}!` : "See you next time!",
+      duration: 4000,
+    });
   };
 
   const value: AuthContextType = {

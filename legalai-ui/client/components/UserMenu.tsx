@@ -21,17 +21,17 @@ export function UserMenu() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
+      <div className="flex items-center gap-1 sm:gap-2">
+        <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
           <Link to="/login">
-            <LogIn className="h-4 w-4 mr-2" />
-            Sign In
+            <LogIn className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline ml-0 sm:ml-2">Sign In</span>
           </Link>
         </Button>
-        <Button size="sm" asChild>
+        <Button size="sm" asChild className="px-2 sm:px-3">
           <Link to="/signup">
-            <UserPlus className="h-4 w-4 mr-2" />
-            Sign Up
+            <UserPlus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline ml-0 sm:ml-2">Sign Up</span>
           </Link>
         </Button>
       </div>
@@ -41,14 +41,22 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3"
+        >
           <User className="h-4 w-4" />
-          <span className="hidden sm:inline">{user?.name}</span>
+          <span className="hidden md:inline text-sm truncate max-w-24">
+            {user?.name}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <div className="px-2 py-1.5 text-sm font-medium">{user?.name}</div>
-        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+        <div className="px-2 py-1.5 text-sm font-medium truncate">
+          {user?.name}
+        </div>
+        <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">
           {user?.email}
         </div>
         <DropdownMenuSeparator />

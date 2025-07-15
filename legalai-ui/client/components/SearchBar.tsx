@@ -27,8 +27,9 @@ export function SearchBar({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-center gap-2">
-        <h2 className="text-xl font-semibold text-center">
-          Search Legal Cases
+        <h2 className="text-lg sm:text-xl font-semibold text-center">
+          <span className="sm:hidden">Search Cases</span>
+          <span className="hidden sm:inline">Search Legal Cases</span>
         </h2>
         <InfoTooltip
           content={
@@ -46,16 +47,16 @@ export function SearchBar({
           }
         />
       </div>
-      <div className="relative flex w-full max-w-4xl mx-auto">
+      <div className="relative flex flex-col sm:flex-row w-full max-w-4xl mx-auto gap-2 sm:gap-0">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+          <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 sm:h-5 sm:w-5" />
           <Input
             type="text"
             placeholder={placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="pl-12 pr-4 py-6 text-lg border-2 border-border focus:border-primary transition-colors"
+            className="pl-10 sm:pl-12 pr-4 py-4 sm:py-6 text-base sm:text-lg border-2 border-border focus:border-primary transition-colors"
             disabled={isLoading}
           />
         </div>
@@ -63,7 +64,7 @@ export function SearchBar({
           onClick={onSearch}
           disabled={isLoading || !value.trim()}
           size="lg"
-          className="ml-3 px-8 py-6 text-lg font-medium"
+          className="sm:ml-3 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-medium w-full sm:w-auto"
         >
           {isLoading ? "Searching..." : "Search"}
         </Button>
