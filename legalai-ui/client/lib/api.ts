@@ -44,10 +44,22 @@ async function apiRequest<T>(
   });
 
   if (!response.ok) {
-    throw new ApiError(
-      `API request failed: ${response.statusText}`,
-      response.status,
-    );
+    // Try to extract error message from response body
+    let errorMessage = `API request failed: ${response.statusText}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.detail) {
+        errorMessage = errorData.detail;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      } else if (errorData.error) {
+        errorMessage = errorData.error;
+      }
+    } catch {
+      // If parsing JSON fails, use the default message
+    }
+
+    throw new ApiError(errorMessage, response.status);
   }
 
   return response.json();
@@ -153,7 +165,7 @@ export async function addBookmark(
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json", 
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ docid, title, court, date }),
   });
