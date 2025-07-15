@@ -77,9 +77,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Show success toast
     toast({
-      title: "Successfully logged in!",
+      title: "✅ Successfully logged in!",
       description: `Welcome back, ${userData.name}!`,
-      duration: 3000,
+      duration: 4000,
     });
   };
 
@@ -93,9 +93,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Show success toast
     toast({
-      title: "Account created successfully!",
+      title: "✅ Account created successfully!",
       description: `Welcome to the platform, ${userData.name}!`,
-      duration: 3000,
+      duration: 4000,
     });
   };
 
@@ -106,9 +106,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Show success toast
     toast({
-      title: "You have been logged out",
+      title: "✅ You have been logged out",
       description: userName ? `Goodbye, ${userName}!` : "See you next time!",
-      duration: 3000,
+      duration: 4000,
     });
   };
 
