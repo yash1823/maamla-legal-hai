@@ -83,16 +83,16 @@ export function FilterSection({
     filters.bench;
 
   return (
-    <Card className="w-full max-w-4xl mx-auto mb-8">
+    <Card className="w-full max-w-4xl mx-auto mb-6 sm:mb-8">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full justify-between p-6 h-auto font-medium text-left"
+            className="w-full justify-between p-4 sm:p-6 h-auto font-medium text-left"
           >
             <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              <span>Advanced Filters</span>
+              <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="text-sm sm:text-base">Advanced Filters</span>
               {hasActiveFilters && (
                 <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   Active
@@ -100,18 +100,20 @@ export function FilterSection({
               )}
             </div>
             <ChevronDown
-              className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+              className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
             />
           </Button>
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <CardContent className="pt-0 pb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <CardContent className="pt-0 pb-4 sm:pb-6 px-4 sm:px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Court Types */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Court Types</Label>
-                <div className="max-h-48 overflow-y-auto space-y-2 p-3 border rounded-md bg-muted/30">
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="text-xs sm:text-sm font-medium">
+                  Court Types
+                </Label>
+                <div className="max-h-40 sm:max-h-48 overflow-y-auto space-y-2 p-2 sm:p-3 border rounded-md bg-muted/30">
                   {COURT_TYPES.map((court) => (
                     <div key={court} className="flex items-center space-x-2">
                       <Checkbox
@@ -121,7 +123,7 @@ export function FilterSection({
                       />
                       <Label
                         htmlFor={court}
-                        className="text-sm font-normal cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-xs sm:text-sm font-normal cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {court}
                       </Label>
@@ -130,9 +132,9 @@ export function FilterSection({
                 </div>
               </div>
 
-            {/* Year Filter */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Year</Label>
+              {/* Year Filter */}
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="text-xs sm:text-sm font-medium">Year</Label>
                 <div>
                   <Input
                     id="year"
@@ -145,11 +147,11 @@ export function FilterSection({
               </div>
 
               {/* Additional Filters */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="text-xs sm:text-sm font-medium">
                   Additional Filters
                 </Label>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <div>
                     <Label
                       htmlFor="maxCitations"
@@ -217,14 +219,15 @@ export function FilterSection({
             </div>
 
             {hasActiveFilters && (
-              <div className="flex justify-end mt-6 pt-4 border-t">
+              <div className="flex justify-end mt-4 sm:mt-6 pt-3 sm:pt-4 border-t">
                 <Button
                   variant="outline"
                   onClick={onClear}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 text-xs sm:text-sm h-8 sm:h-10"
                 >
-                  <X className="h-4 w-4" />
-                  Clear Filters
+                  <X className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Clear Filters</span>
+                  <span className="sm:hidden">Clear</span>
                 </Button>
               </div>
             )}

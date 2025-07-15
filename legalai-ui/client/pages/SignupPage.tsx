@@ -26,7 +26,7 @@ export default function SignupPage() {
 
   const handleSignupSuccess = () => {
     const from = location.state?.from?.pathname || "/";
-    navigate(from, { replace: true });
+    navigate(from, { replace: true, state: { scrollToSearch: true } });
   };
 
   return (

@@ -41,10 +41,12 @@ export function ResultsList({
 
   if (!searchQuery) {
     return (
-      <div className="text-center py-20">
-        <FileSearch className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-        <h2 className="text-xl font-medium">Search Indian Legal Cases</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
+      <div className="text-center py-12 sm:py-20 px-4">
+        <FileSearch className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-muted-foreground" />
+        <h2 className="text-lg sm:text-xl font-medium">
+          Search Indian Legal Cases
+        </h2>
+        <p className="text-muted-foreground max-w-md mx-auto text-sm sm:text-base">
           Enter a query above to explore judgments and precedents.
         </p>
       </div>
@@ -53,10 +55,10 @@ export function ResultsList({
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-20">
-        <FileSearch className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-        <h2 className="text-xl font-medium">No Results Found</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
+      <div className="text-center py-12 sm:py-20 px-4">
+        <FileSearch className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-muted-foreground" />
+        <h2 className="text-lg sm:text-xl font-medium">No Results Found</h2>
+        <p className="text-muted-foreground max-w-md mx-auto text-sm sm:text-base">
           Try different keywords or remove filters.
         </p>
       </div>
@@ -65,14 +67,14 @@ export function ResultsList({
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      <h2 className="text-xl font-semibold text-foreground">
+      <h2 className="text-lg sm:text-xl font-semibold text-foreground">
         Search Results
-        <span className="ml-2 text-sm text-muted-foreground">
+        <span className="ml-2 text-xs sm:text-sm text-muted-foreground">
           ({results.length} found)
         </span>
       </h2>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         {results.map((caseData) => (
           <CaseCard
             key={caseData.docid}
