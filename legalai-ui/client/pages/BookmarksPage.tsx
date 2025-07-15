@@ -121,7 +121,21 @@ export default function BookmarksPage() {
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-3">
+            <Link
+              to="/"
+              className="flex items-center space-x-3"
+              onClick={() => {
+                // Preserve any existing search state when returning home
+                try {
+                  const savedState = localStorage.getItem("searchState");
+                  if (savedState) {
+                    // Search state will be restored by the Index component
+                  }
+                } catch (error) {
+                  console.log("No search state to preserve");
+                }
+              }}
+            >
               <div className="p-2 bg-primary rounded-lg">
                 <Scale className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -140,7 +154,20 @@ export default function BookmarksPage() {
                 Welcome, {user?.name}
               </p>
               <Button variant="outline" asChild>
-                <Link to="/">
+                <Link
+                  to="/"
+                  onClick={() => {
+                    // Preserve any existing search state when returning home
+                    try {
+                      const savedState = localStorage.getItem("searchState");
+                      if (savedState) {
+                        // Search state will be restored by the Index component
+                      }
+                    } catch (error) {
+                      console.log("No search state to preserve");
+                    }
+                  }}
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Search
                 </Link>
@@ -193,7 +220,15 @@ export default function BookmarksPage() {
                   interesting
                 </p>
                 <Button asChild>
-                  <Link to="/">Start Searching Cases</Link>
+                  <Link
+                    to="/"
+                    onClick={() => {
+                      // Clear any old search state since user is starting fresh
+                      localStorage.removeItem("searchState");
+                    }}
+                  >
+                    Start Searching Cases
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
