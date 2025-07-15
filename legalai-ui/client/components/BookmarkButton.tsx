@@ -108,13 +108,18 @@ export function BookmarkButton({
       className={className}
     >
       {isLoading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
       ) : (
         <Star
-          className={`h-4 w-4 ${isBookmarked ? "fill-current text-yellow-500" : ""}`}
+          className={`h-3 w-3 sm:h-4 sm:w-4 ${isBookmarked ? "fill-current text-yellow-500" : ""}`}
         />
       )}
-      <span className="ml-2">{isBookmarked ? "Bookmarked" : "Bookmark"}</span>
+      <span className="ml-1 sm:ml-2 text-xs sm:text-sm">
+        <span className="hidden sm:inline">
+          {isBookmarked ? "Bookmarked" : "Bookmark"}
+        </span>
+        <span className="sm:hidden">{isBookmarked ? "★" : "☆"}</span>
+      </span>
     </Button>
   );
 }
