@@ -103,10 +103,12 @@ export default function CaseDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col items-center justify-center py-24 space-y-4">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-24 space-y-4">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Loading case details...</p>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Loading case details...
+            </p>
           </div>
         </div>
       </div>
@@ -116,20 +118,22 @@ export default function CaseDetailPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          <div className="mb-4 sm:mb-6">
             <Button
               variant="outline"
               onClick={handleBack}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-sm sm:text-base"
+              size="sm"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Results
+              <span className="hidden sm:inline">Back to Results</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </div>
           <Alert variant="destructive" className="max-w-4xl mx-auto">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
+            <AlertDescription className="text-sm">
               <strong>Error:</strong> {error}
             </AlertDescription>
           </Alert>
@@ -168,29 +172,34 @@ export default function CaseDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-6xl">
         {/* Navigation */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button
             variant="outline"
             onClick={handleBack}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-sm sm:text-base"
+            size="sm"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Results
+            <span className="hidden sm:inline">Back to Results</span>
+            <span className="sm:hidden">Back</span>
           </Button>
         </div>
 
         {/* Case Header */}
-        <Card className="mb-8">
-          <CardHeader>
+        <Card className="mb-6 sm:mb-8">
+          <CardHeader className="p-4 sm:p-6">
             <div className="space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <CardTitle className="text-2xl font-bold leading-tight flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <CardTitle className="text-lg sm:text-2xl font-bold leading-tight flex-1">
                   {caseDetail.title}
                 </CardTitle>
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="text-sm px-3 py-1">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Badge
+                    variant="secondary"
+                    className="text-xs sm:text-sm px-2 sm:px-3 py-1"
+                  >
                     {caseDetail.citation_count} citations
                   </Badge>
                   <BookmarkButton
@@ -198,18 +207,23 @@ export default function CaseDetailPage() {
                     title={caseDetail.title}
                     court={caseDetail.court}
                     date={caseDetail.publish_date}
+                    className="text-xs sm:text-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Scale className="h-5 w-5" />
-                  <span className="font-medium">{caseDetail.court}</span>
+                  <Scale className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="font-medium text-sm sm:text-base">
+                    {caseDetail.court}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  <span>Published {formatDate(caseDetail.publish_date)}</span>
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-sm sm:text-base">
+                    Published {formatDate(caseDetail.publish_date)}
+                  </span>
                 </div>
               </div>
 
@@ -219,7 +233,7 @@ export default function CaseDetailPage() {
                   onClick={handleSummarize}
                   disabled={isSummarizing}
                   size="lg"
-                  className="bg-legal-blue hover:bg-legal-blue/90"
+                  className="bg-legal-blue hover:bg-legal-blue/90 w-full sm:w-auto text-sm sm:text-base"
                 >
                   {isSummarizing ? "Summarizing..." : "✨ Summarize Case"}
                 </Button>
