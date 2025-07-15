@@ -189,8 +189,8 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        <section className="space-y-6">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
+        <section className="space-y-4 sm:space-y-6">
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
@@ -216,15 +216,18 @@ export default function Index() {
         </section>
       </main>
 
-      <footer className="border-t bg-card/30 mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-sm text-muted-foreground">
+      <footer className="border-t bg-card/30 mt-8 sm:mt-16">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+          <div className="text-center text-xs sm:text-sm text-muted-foreground">
             <p>
               © 2025 Maamla Legal Hai. Search Indian legal cases and judgments.
             </p>
-            <p className="mt-2">
+            <p className="mt-2 hidden sm:block">
               This platform provides access to legal information for research
               and educational purposes.
+            </p>
+            <p className="mt-2 sm:hidden">
+              Legal information for research purposes.
             </p>
           </div>
         </div>
