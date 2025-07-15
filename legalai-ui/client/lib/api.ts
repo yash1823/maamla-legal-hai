@@ -193,3 +193,20 @@ export async function removeBookmark(
     },
   );
 }
+
+// ✅ Check if a case is bookmarked
+export async function checkBookmarkStatus(
+  token: string,
+  docid: string,
+): Promise<{ isBookmarked: boolean }> {
+  try {
+    const bookmarks = await getBookmarks(token);
+    const isBookmarked = bookmarks.some(
+      (bookmark: any) => bookmark.docid === docid,
+    );
+    return { isBookmarked };
+  } catch (error) {
+    console.error("Error checking bookmark status:", error);
+    return { isBookmarked: false };
+  }
+}
