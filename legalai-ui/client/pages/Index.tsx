@@ -63,15 +63,15 @@ export default function Index() {
       }
     }
 
-    // Handle scroll to search bar after login/signup or by default
-    const shouldScrollToSearch =
+    // Handle scroll to top after login/signup or by default
+    const shouldScrollToTop =
       location.state?.scrollToSearch || !location.state?.searchState;
 
-    if (shouldScrollToSearch) {
+    if (shouldScrollToTop) {
       setTimeout(() => {
-        searchSectionRef.current?.scrollIntoView({
+        window.scrollTo({
+          top: 0,
           behavior: "smooth",
-          block: "start",
         });
       }, 100);
 
