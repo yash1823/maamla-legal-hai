@@ -171,8 +171,7 @@ export default function Index() {
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">
-                  <span className="sm:hidden">Maamla Legal</span>
-                  <span className="hidden sm:inline">Maamla Legal Hai</span>
+                  Maamla Legal Hai
                 </h1>
                 <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                   Search Indian legal cases and judgments
