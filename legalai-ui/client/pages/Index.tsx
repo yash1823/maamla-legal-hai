@@ -63,16 +63,22 @@ export default function Index() {
       }
     }
 
-    // Handle scroll to search bar after login/signup
-    if (location.state?.scrollToSearch) {
+    // Handle scroll to search bar after login/signup or by default
+    const shouldScrollToSearch =
+      location.state?.scrollToSearch || !location.state?.searchState;
+
+    if (shouldScrollToSearch) {
       setTimeout(() => {
         searchSectionRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
       }, 100);
-      // Clear the scroll flag from location state
-      window.history.replaceState(null, "", window.location.pathname);
+
+      // Clear the scroll flag from location state if it exists
+      if (location.state?.scrollToSearch) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
     }
   }, [location.state]);
 
