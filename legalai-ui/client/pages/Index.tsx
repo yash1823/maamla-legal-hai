@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Scale } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
@@ -26,9 +26,11 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const searchSectionRef = useRef<HTMLDivElement>(null);
 
-  // Restore search state from navigation state
+  // Restore search state from navigation state or localStorage
   useEffect(() => {
+    // First check navigation state (higher priority)
     if (location.state?.searchState) {
       const {
         searchQuery: prevQuery,
@@ -40,6 +42,37 @@ export default function Index() {
       setFilters(prevFilters);
       setResults(prevResults);
       setHasSearched(prevHasSearched);
+    } else {
+      // Try to restore from localStorage
+      try {
+        const savedState = localStorage.getItem("searchState");
+        if (savedState) {
+          const {
+            searchQuery: prevQuery,
+            filters: prevFilters,
+            results: prevResults,
+            hasSearched: prevHasSearched,
+          } = JSON.parse(savedState);
+          setSearchQuery(prevQuery || "");
+          setFilters(prevFilters || initialFilters);
+          setResults(prevResults || []);
+          setHasSearched(prevHasSearched || false);
+        }
+      } catch (error) {
+        console.log("Failed to restore search state:", error);
+      }
+    }
+
+    // Handle scroll to search bar after login/signup
+    if (location.state?.scrollToSearch) {
+      setTimeout(() => {
+        searchSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+      // Clear the scroll flag from location state
+      window.history.replaceState(null, "", window.location.pathname);
     }
   }, [location.state]);
 
@@ -93,7 +126,17 @@ export default function Index() {
       }
 
       const response = await searchCases(searchParams);
-      setResults(response.cases || []);
+      const newResults = response.cases || [];
+      setResults(newResults);
+
+      // Save search state to localStorage
+      const searchState = {
+        searchQuery: searchQuery.trim(),
+        filters,
+        results: newResults,
+        hasSearched: true,
+      };
+      localStorage.setItem("searchState", JSON.stringify(searchState));
     } catch (err) {
       console.error("Search error:", err);
       setError(
@@ -189,7 +232,7 @@ export default function Index() {
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
-        <section className="space-y-4 sm:space-y-6">
+        <section ref={searchSectionRef} className="space-y-4 sm:space-y-6">
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
