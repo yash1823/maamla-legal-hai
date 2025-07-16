@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from utils.db import get_pool, save_meta, get_meta, save_summary
 from utils.kanoon_api import fetch_case_by_docid
 from utils.sambonva_utils import summarize_case, hierarchical_relevance
 from typing import List, Optional
-import asyncpg
+import os
 
 router = APIRouter()
 
@@ -68,3 +68,10 @@ async def get_case_meta_data(
         ]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/health")
+async def health_check(request: Request):
+    token = request.query_params.get("token")
+    if token != os.getenv("HEALTH_CHECK_TOKEN"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return {"status": "ok"}

@@ -8,7 +8,7 @@ from utils.sambonva_utils import extract_keywords, hierarchical_relevance, summa
 from utils.db import get_meta, init_db, save_meta, save_summary
 from routes import case_routes, meta
 from routes.user_routes import router as user_router
-from routes.case_routes import router as case_routes  # ✅ CORRECT
+from routes.case_routes import router as case_routes 
 
 
 @asynccontextmanager
@@ -16,17 +16,19 @@ async def lifespan(app: FastAPI):
     # Startup logic
     await init_db()
     yield
-    # Shutdown logic (if any)
 
 app = FastAPI(lifespan=lifespan)
 
-# CORS setup
+origins = [
+    "https://maamla-legal-hai-ui.onrender.com",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=origins,           
+    allow_credentials=True,          
+    allow_methods=["*"],             
+    allow_headers=["*"],             
 )
 
 # Include sub-routers
