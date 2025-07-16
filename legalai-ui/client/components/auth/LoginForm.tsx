@@ -101,7 +101,17 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? <AuthLoader action="login" /> : "Sign In"}
+        {isLoading ? (
+          <EnhancedLoader
+            message="Signing you in..."
+            size="sm"
+            layout="inline"
+            variant="spinner"
+            className="text-primary-foreground"
+          />
+        ) : (
+          "Sign In"
+        )}
       </Button>
     </form>
   );
