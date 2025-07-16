@@ -73,9 +73,6 @@ async def get_case_meta_data(
 async def health_check(request: Request):
     token = request.query_params.get("token")
     env_token = os.getenv("HEALTH_CHECK_TOKEN")
-    print(f"[DEBUG] Received token: {token}")
-    print(f"[DEBUG] Env token: {env_token}")
-
     if token != env_token:
         raise HTTPException(status_code=403, detail="Forbidden")
 
