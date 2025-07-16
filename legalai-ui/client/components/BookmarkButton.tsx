@@ -99,7 +99,7 @@ export function BookmarkButton({
             action: (
               <Button
                 size="sm"
-                onClick={() => (window.location.href = "/signup")}
+                onClick={() => navigate("/signup")}
                 className="ml-2"
               >
                 Sign Up
