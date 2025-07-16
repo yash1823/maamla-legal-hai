@@ -2,7 +2,7 @@ name: Keep FastAPI Backend Warm
 
 on:
   schedule:
-    - cron: "*/7 * * * *" 
+    - cron: "*/1 * * * *" 
   workflow_dispatch:
 
 jobs:
