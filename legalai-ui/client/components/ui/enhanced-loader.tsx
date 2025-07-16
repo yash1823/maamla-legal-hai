@@ -23,12 +23,11 @@ function PulsingDots({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
         <div
           key={index}
           className={cn(
-            "bg-primary rounded-full animate-pulse",
+            "bg-primary rounded-full animate-dot-pulse",
             dotSizes[size],
           )}
           style={{
-            animationDelay: `${index * 0.2}s`,
-            animationDuration: "1s",
+            animationDelay: `${index * 160}ms`,
           }}
         />
       ))}
@@ -170,9 +169,9 @@ export function CaseDetailLoader() {
 export function SummarizationLoader() {
   return (
     <EnhancedLoader
-      message="Analyzing case content and generating summary..."
-      size="md"
-      layout="card"
+      message="Analyzing case..."
+      size="sm"
+      layout="inline"
       variant="dots"
     />
   );
