@@ -5,6 +5,7 @@ import type {
   CaseDetailResponse,
   CaseResult,
 } from "@shared/api";
+import { apiRequestWithAuth } from "./auth-interceptor";
 
 // ✅ Remove trailing slashes from base URL
 const API_BASE_URL = (
@@ -27,7 +28,7 @@ function joinUrl(base: string, endpoint: string): string {
   return `${base}/${endpoint.replace(/^\/+/, "")}`;
 }
 
-// ✅ Generic API request function
+// ✅ Generic API request function (for non-auth endpoints)
 async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -63,6 +64,16 @@ async function apiRequest<T>(
   }
 
   return response.json();
+}
+
+// ✅ Authenticated API request function
+async function authApiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
+  const url = joinUrl(API_BASE_URL, endpoint);
+  console.log("🔐 Auth Request URL:", url);
+  return apiRequestWithAuth<T>(url, options);
 }
 
 // ✅ POST /search
@@ -144,63 +155,45 @@ export async function signupUser(
 }
 
 export async function getCurrentUser(
-  token: string,
+  token?: string,
 ): Promise<{ id: string; email: string; name: string }> {
-  return apiRequest<{ id: string; email: string; name: string }>("/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return authApiRequest<{ id: string; email: string; name: string }>("/me");
 }
 
 // ✅ Bookmark API functions
 export async function addBookmark(
-  token: string,
   docid: string,
   title: string,
   court: string,
   date: string,
 ): Promise<{ message: string }> {
-  return apiRequest<{ message: string }>("/bookmark", {
+  return authApiRequest<{ message: string }>("/bookmark", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({ docid, title, court, date }),
   });
 }
 
-export async function getBookmarks(token: string): Promise<any[]> {
-  return apiRequest<any[]>("/bookmarks", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function getBookmarks(): Promise<any[]> {
+  return authApiRequest<any[]>("/bookmarks");
 }
 
 export async function removeBookmark(
-  token: string,
   docid: string,
 ): Promise<{ message: string }> {
-  return apiRequest<{ message: string }>(
+  return authApiRequest<{ message: string }>(
     `/bookmark?docid=${encodeURIComponent(docid)}`,
     {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     },
   );
 }
 
 // ✅ Check if a case is bookmarked
 export async function checkBookmarkStatus(
-  token: string,
   docid: string,
 ): Promise<{ isBookmarked: boolean }> {
   try {
-    const bookmarks = await getBookmarks(token);
+    const bookmarks = await getBookmarks();
     const isBookmarked = bookmarks.some(
       (bookmark: any) => bookmark.docid === docid,
     );
