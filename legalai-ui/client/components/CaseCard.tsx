@@ -133,9 +133,16 @@ export function CaseCard({
           </TooltipProvider>
 
           {relevance && (
-            <div className="text-xs mt-2 p-2 border rounded bg-muted/30 prose dark:prose-invert">
-              <strong>Relevance:</strong>
-              <p>{relevance}</p>
+            <div className="text-xs mt-2 p-3 border rounded bg-legal-blue-light/20 border-legal-blue/20">
+              <div className="flex items-start gap-2 mb-2">
+                <Info className="h-3 w-3 text-legal-blue mt-0.5 flex-shrink-0" />
+                <div className="font-medium text-legal-blue">
+                  Relevance to{userQuery ? ` "${userQuery}"` : " your search"}
+                </div>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                {relevance}
+              </p>
             </div>
           )}
         </div>
