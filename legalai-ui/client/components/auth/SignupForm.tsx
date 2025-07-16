@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
-import { AuthLoader } from "@/components/ui/enhanced-loader";
+import { EnhancedLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 
 const signupSchema = z
@@ -184,7 +184,17 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? <AuthLoader action="signup" /> : "Create Account"}
+        {isLoading ? (
+          <EnhancedLoader
+            message="Creating your account..."
+            size="sm"
+            layout="inline"
+            variant="spinner"
+            className="text-primary-foreground"
+          />
+        ) : (
+          "Create Account"
+        )}
       </Button>
     </form>
   );
