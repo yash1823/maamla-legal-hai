@@ -11,4 +11,5 @@ jobs:
     steps:
       - name: Ping FastAPI health route
         run: |
-          curl "https://maamla-legal-hai-api.onrender.com/health?token=${{ secrets.HEALTH_CHECK_TOKEN }}"
+            echo "Calling: https://maamla-legal-hai-api.onrender.com/health?token=${{ secrets.HEALTH_CHECK_TOKEN }}"
+            curl -v "https://maamla-legal-hai-api.onrender.com/health?token=${{ secrets.HEALTH_CHECK_TOKEN }}"
