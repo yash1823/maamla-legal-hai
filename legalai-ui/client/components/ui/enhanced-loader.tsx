@@ -22,16 +22,27 @@ function PulsingDots({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
       {[0, 1, 2].map((index) => (
         <div
           key={index}
-          className={cn(
-            "bg-primary rounded-full animate-pulse",
-            dotSizes[size],
-          )}
+          className={cn("bg-primary rounded-full", dotSizes[size])}
           style={{
-            animationDelay: `${index * 0.2}s`,
-            animationDuration: "1s",
+            animation: `dotPulse 1.4s ease-in-out infinite`,
+            animationDelay: `${index * 0.16}s`,
           }}
         />
       ))}
+      <style jsx>{`
+        @keyframes dotPulse {
+          0%,
+          80%,
+          100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
