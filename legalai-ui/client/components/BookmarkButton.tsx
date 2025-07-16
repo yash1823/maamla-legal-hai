@@ -86,7 +86,34 @@ export function BookmarkButton({
   };
 
   if (!isAuthenticated) {
-    return null; // Don't show bookmark button for unauthenticated users
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          toast({
+            title: "Sign up to bookmark cases",
+            description: "Create an account to save cases for later reference.",
+            action: (
+              <Button
+                size="sm"
+                onClick={() => (window.location.href = "/signup")}
+                className="ml-2"
+              >
+                Sign Up
+              </Button>
+            ),
+          });
+        }}
+        className={className}
+      >
+        <Star className="h-3 w-3 sm:h-4 sm:w-4" />
+        <span className="ml-1 sm:ml-2 text-xs sm:text-sm">
+          <span className="hidden sm:inline">Sign up to bookmark</span>
+          <span className="sm:hidden">☆</span>
+        </span>
+      </Button>
+    );
   }
 
   return (
