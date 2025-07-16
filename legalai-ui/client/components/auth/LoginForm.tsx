@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff } from "lucide-react";
-import { AuthLoader } from "@/components/ui/enhanced-loader";
+import { EnhancedLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 
 const loginSchema = z.object({
