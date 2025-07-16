@@ -6,13 +6,16 @@ import {
   FileText,
   Scale,
   Quote,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  CaseDetailLoader,
+  SummarizationLoader,
+} from "@/components/ui/enhanced-loader";
 import { BookmarkButton } from "@/components/BookmarkButton";
 import { getCaseDetail, summarizeCase } from "@/lib/api";
 import type { CaseDetail } from "@shared/api";
@@ -104,12 +107,7 @@ export default function CaseDetailPage() {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-          <div className="flex flex-col items-center justify-center py-12 sm:py-24 space-y-4">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground text-sm sm:text-base">
-              Loading case details...
-            </p>
-          </div>
+          <CaseDetailLoader />
         </div>
       </div>
     );
@@ -235,7 +233,11 @@ export default function CaseDetailPage() {
                   size="lg"
                   className="bg-legal-blue hover:bg-legal-blue/90 w-full sm:w-auto text-sm sm:text-base"
                 >
-                  {isSummarizing ? "Summarizing..." : "✨ Summarize Case"}
+                  {isSummarizing ? (
+                    <SummarizationLoader />
+                  ) : (
+                    "✨ Summarize Case"
+                  )}
                 </Button>
               </div>
             </div>
