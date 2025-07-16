@@ -170,9 +170,9 @@ export function CaseDetailLoader() {
 export function SummarizationLoader() {
   return (
     <EnhancedLoader
-      message="Analyzing case content and generating summary..."
-      size="md"
-      layout="card"
+      message="Analyzing case..."
+      size="sm"
+      layout="inline"
       variant="dots"
     />
   );
