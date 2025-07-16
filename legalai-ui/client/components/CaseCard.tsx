@@ -140,9 +140,7 @@ export function CaseCard({
                   Relevance to{userQuery ? ` "${userQuery}"` : " your search"}
                 </div>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                {relevance}
-              </p>
+              <p className="text-foreground/80 leading-relaxed">{relevance}</p>
             </div>
           )}
         </div>
