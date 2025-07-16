@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookmarkLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { addBookmark, removeBookmark, checkBookmarkStatus } from "@/lib/api";
 
 interface BookmarkButtonProps {
@@ -23,6 +24,7 @@ export function BookmarkButton({
 }: BookmarkButtonProps) {
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -86,7 +88,34 @@ export function BookmarkButton({
   };
 
   if (!isAuthenticated) {
-    return null; // Don't show bookmark button for unauthenticated users
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          toast({
+            title: "Sign up to bookmark cases",
+            description: "Create an account to save cases for later reference.",
+            action: (
+              <Button
+                size="sm"
+                onClick={() => navigate("/signup")}
+                className="ml-2"
+              >
+                Sign Up
+              </Button>
+            ),
+          });
+        }}
+        className={className}
+      >
+        <Star className="h-3 w-3 sm:h-4 sm:w-4" />
+        <span className="ml-1 sm:ml-2 text-xs sm:text-sm">
+          <span className="hidden sm:inline">Sign up to bookmark</span>
+          <span className="sm:hidden">☆</span>
+        </span>
+      </Button>
+    );
   }
 
   return (
