@@ -74,4 +74,5 @@ async def health_check(request: Request):
     token = request.query_params.get("token")
     if token != os.getenv("HEALTH_CHECK_TOKEN"):
         raise HTTPException(status_code=403, detail="Forbidden")
+    print("[API] Health check passed")
     return {"status": "ok"}
