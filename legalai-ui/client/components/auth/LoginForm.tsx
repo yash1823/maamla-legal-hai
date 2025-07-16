@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { AuthLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 
 const loginSchema = z.object({
@@ -100,8 +101,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Sign In
+        {isLoading ? <AuthLoader action="login" /> : "Sign In"}
       </Button>
     </form>
   );
