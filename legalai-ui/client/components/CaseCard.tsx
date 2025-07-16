@@ -9,6 +9,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { RelevanceLoader } from "@/components/ui/enhanced-loader";
 import { BookmarkButton } from "./BookmarkButton";
 import type { CaseResult } from "@shared/api";
 import { getRelevance } from "@/lib/api";
@@ -97,13 +98,15 @@ export function CaseCard({
             disabled={isLoading}
             className="flex items-center gap-2 text-xs sm:text-sm h-8 sm:h-9"
           >
-            <Info className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">
-              {isLoading ? "Loading..." : "Why is this relevant?"}
-            </span>
-            <span className="sm:hidden">
-              {isLoading ? "Loading..." : "Relevance"}
-            </span>
+            {isLoading ? (
+              <RelevanceLoader />
+            ) : (
+              <>
+                <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Why is this relevant?</span>
+                <span className="sm:hidden">Relevance</span>
+              </>
+            )}
           </Button>
 
           {relevance && (
