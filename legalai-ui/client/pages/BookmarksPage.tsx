@@ -7,12 +7,12 @@ import {
   Building2,
   Trash2,
   ArrowLeft,
-  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { EnhancedLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getBookmarks, removeBookmark } from "@/lib/api";
@@ -41,12 +41,7 @@ export default function BookmarksPage() {
     setError(null);
 
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        throw new Error("No authentication token");
-      }
-
-      const data = await getBookmarks(token);
+      const data = await getBookmarks();
       setBookmarks(data || []);
     } catch (err) {
       console.error("Error fetching bookmarks:", err);
@@ -58,10 +53,7 @@ export default function BookmarksPage() {
 
   const handleRemoveBookmark = async (docid: string) => {
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) throw new Error("You must be logged in");
-
-      await removeBookmark(token, docid);
+      await removeBookmark(docid);
       setBookmarks((prev) => prev.filter((b) => b.docid !== docid));
 
       toast({
@@ -97,13 +89,13 @@ export default function BookmarksPage() {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <motion.div
-            className="flex flex-col items-center justify-center py-24 space-y-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Loading your bookmarks...</p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <EnhancedLoader
+              message="Loading your bookmarks..."
+              size="lg"
+              layout="fullscreen"
+              variant="spinner"
+            />
           </motion.div>
         </div>
       </div>
