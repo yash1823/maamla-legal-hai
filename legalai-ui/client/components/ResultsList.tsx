@@ -1,6 +1,7 @@
 // ResultsList.tsx
-import { AlertCircle, FileSearch, Loader2 } from "lucide-react";
+import { AlertCircle, FileSearch } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SearchLoader } from "@/components/ui/enhanced-loader";
 import { CaseCard } from "./CaseCard";
 import type { CaseResult } from "@shared/api";
 
@@ -20,12 +21,7 @@ export function ResultsList({
   onViewDetails,
 }: ResultsListProps) {
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-muted-foreground">Searching legal cases...</p>
-      </div>
-    );
+    return <SearchLoader query={searchQuery} />;
   }
 
   if (error) {

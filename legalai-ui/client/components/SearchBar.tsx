@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EnhancedLoader } from "@/components/ui/enhanced-loader";
 import { InfoTooltip } from "./InfoTooltip";
 
 interface SearchBarProps {
@@ -66,7 +67,17 @@ export function SearchBar({
           size="lg"
           className="sm:ml-3 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-medium w-full sm:w-auto"
         >
-          {isLoading ? "Searching..." : "Search"}
+          {isLoading ? (
+            <EnhancedLoader
+              message="Searching..."
+              size="sm"
+              layout="inline"
+              variant="spinner"
+              className="text-primary-foreground"
+            />
+          ) : (
+            "Search"
+          )}
         </Button>
       </div>
     </div>

@@ -6,6 +6,13 @@ import React, {
   ReactNode,
 } from "react";
 import { loginUser, signupUser, getCurrentUser } from "@/lib/api";
+import {
+  onAuthEvent,
+  startTokenExpiryCheck,
+  stopTokenExpiryCheck,
+  isAuthenticated,
+  isTokenExpired,
+} from "@/lib/auth-interceptor";
 import { toast } from "@/hooks/use-toast";
 
 export interface User {
@@ -44,9 +51,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing session on mount
+  // Check for existing session on mount and setup token expiry monitoring
   useEffect(() => {
     checkAuthStatus();
+
+    // Subscribe to auth events (token expiry, etc.)
+    const unsubscribe = onAuthEvent(() => {
+      // Handle token expiry by clearing user state
+      setUser(null);
+      stopTokenExpiryCheck();
+    });
+
+    return () => {
+      unsubscribe();
+      stopTokenExpiryCheck();
+    };
   }, []);
 
   const checkAuthStatus = async () => {
@@ -57,11 +76,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      const userData = await getCurrentUser(token);
+      // Check if token is expired before making API call
+      if (isTokenExpired(token)) {
+        console.warn("Token expired during auth check");
+        localStorage.removeItem("auth_token");
+        setIsLoading(false);
+        return;
+      }
+
+      const userData = await getCurrentUser();
       setUser(userData);
+
+      // Start monitoring token expiry
+      startTokenExpiryCheck();
     } catch (error) {
       console.error("Auth check failed:", error);
       localStorage.removeItem("auth_token");
+      stopTokenExpiryCheck();
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +103,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem("auth_token", data.token);
 
     // Fetch user data after login
-    const userData = await getCurrentUser(data.token);
+    const userData = await getCurrentUser();
     setUser(userData);
+
+    // Start monitoring token expiry
+    startTokenExpiryCheck();
 
     // Show success toast
     toast({
@@ -88,8 +122,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem("auth_token", data.token);
 
     // Fetch user data after signup
-    const userData = await getCurrentUser(data.token);
+    const userData = await getCurrentUser();
     setUser(userData);
+
+    // Start monitoring token expiry
+    startTokenExpiryCheck();
 
     // Show success toast
     toast({
@@ -103,6 +140,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const userName = user?.name || "";
     localStorage.removeItem("auth_token");
     setUser(null);
+
+    // Stop monitoring token expiry
+    stopTokenExpiryCheck();
 
     // Show success toast
     toast({
