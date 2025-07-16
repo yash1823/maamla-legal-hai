@@ -178,10 +178,14 @@ export function SummarizationLoader() {
   );
 }
 
-export function RelevanceLoader() {
+export function RelevanceLoader({ query }: { query?: string }) {
+  const message = query
+    ? `Analyzing relevance to "${query}"...`
+    : "Analyzing legal relevance...";
+
   return (
     <EnhancedLoader
-      message="Analyzing legal relevance..."
+      message={message}
       size="sm"
       layout="inline"
       variant="dots"
