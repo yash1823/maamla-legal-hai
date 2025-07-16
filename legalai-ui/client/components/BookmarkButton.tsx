@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookmarkLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { addBookmark, removeBookmark, checkBookmarkStatus } from "@/lib/api";
 
 interface BookmarkButtonProps {
