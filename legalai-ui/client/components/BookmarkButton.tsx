@@ -24,6 +24,7 @@ export function BookmarkButton({
 }: BookmarkButtonProps) {
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
