@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Heart, Loader2, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BookmarkLoader } from "@/components/ui/enhanced-loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { addBookmark, removeBookmark, checkBookmarkStatus } from "@/lib/api";
@@ -36,13 +37,7 @@ export function BookmarkButton({
 
   const checkCurrentBookmarkStatus = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) return;
-
-      const { isBookmarked: bookmarkStatus } = await checkBookmarkStatus(
-        token,
-        docid,
-      );
+      const { isBookmarked: bookmarkStatus } = await checkBookmarkStatus(docid);
       setIsBookmarked(bookmarkStatus);
     } catch (error) {
       console.error("Error checking bookmark status:", error);
@@ -63,20 +58,15 @@ export function BookmarkButton({
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        throw new Error("No authentication token");
-      }
-
       if (!isBookmarked) {
-        await addBookmark(token, docid, title, court, date);
+        await addBookmark(docid, title, court, date);
         setIsBookmarked(true);
         toast({
           title: "Case Bookmarked",
           description: "Case added to your bookmarks",
         });
       } else {
-        await removeBookmark(token, docid);
+        await removeBookmark(docid);
         setIsBookmarked(false);
         toast({
           title: "Bookmark Removed",
@@ -108,18 +98,20 @@ export function BookmarkButton({
       className={className}
     >
       {isLoading ? (
-        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+        <BookmarkLoader action={isBookmarked ? "remove" : "add"} />
       ) : (
-        <Star
-          className={`h-3 w-3 sm:h-4 sm:w-4 ${isBookmarked ? "fill-current text-yellow-500" : ""}`}
-        />
+        <>
+          <Star
+            className={`h-3 w-3 sm:h-4 sm:w-4 ${isBookmarked ? "fill-current text-yellow-500" : ""}`}
+          />
+          <span className="ml-1 sm:ml-2 text-xs sm:text-sm">
+            <span className="hidden sm:inline">
+              {isBookmarked ? "Bookmarked" : "Bookmark"}
+            </span>
+            <span className="sm:hidden">{isBookmarked ? "★" : "☆"}</span>
+          </span>
+        </>
       )}
-      <span className="ml-1 sm:ml-2 text-xs sm:text-sm">
-        <span className="hidden sm:inline">
-          {isBookmarked ? "Bookmarked" : "Bookmark"}
-        </span>
-        <span className="sm:hidden">{isBookmarked ? "★" : "☆"}</span>
-      </span>
     </Button>
   );
 }
