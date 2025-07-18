@@ -3,6 +3,8 @@ from passlib.hash import bcrypt
 from utils.jwt_utils import create_token, verify_token
 from utils.db import get_user_by_email, create_user, get_user_by_id
 from models.schemas import UserSignup, UserLogin
+from utils.crypto import sign_admin_token
+import os
 
 router = APIRouter()
 
@@ -18,6 +20,7 @@ async def signup(user: UserSignup):
     token = create_token(user_record["id"])
     return {"token": token}
 
+
 @router.post("/login")
 async def login(user: UserLogin):
     user_record = await get_user_by_email(user.email)
@@ -25,7 +28,15 @@ async def login(user: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_token(user_record["id"])
-    return {"token": token}
+    response = {"token": token}
+
+    # If it's the admin (your logic here, e.g., email match)
+    if user_record["email"] == os.getenv("ADMIN_EMAIL"):
+        admin_token = sign_admin_token(user_record["id"])
+        response["admin_token"] = admin_token
+
+    return response
+
 
 @router.get("/me")
 async def get_me(authorization: str = Header(...)):
