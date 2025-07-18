@@ -13,7 +13,6 @@ import CaseDetailPage from "./pages/CaseDetail";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import BookmarksPage from "./pages/BookmarksPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,14 +34,6 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <BookmarksPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminDashboardPage />
                 </ProtectedRoute>
               }
             />

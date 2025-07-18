@@ -4,8 +4,6 @@ import type {
   CaseDetailRequest,
   CaseDetailResponse,
   CaseResult,
-  DbDebugResponse,
-  UsersDebugResponse,
 } from "@shared/api";
 import { apiRequestWithAuth } from "./auth-interceptor";
 
@@ -204,43 +202,4 @@ export async function checkBookmarkStatus(
     console.error("Error checking bookmark status:", error);
     return { isBookmarked: false };
   }
-}
-
-// ✅ Admin API request function with X-Admin-Token header
-async function adminApiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {},
-): Promise<T> {
-  const url = joinUrl(API_BASE_URL, endpoint);
-
-  // Get admin token from localStorage
-  const adminToken = localStorage.getItem("admin_token");
-  if (!adminToken) {
-    throw new ApiError("Admin token not found", 401);
-  }
-
-  console.log("🔐 Admin Request URL:", url);
-
-  // Use auth request with additional admin token header
-  return apiRequestWithAuth<T>(url, {
-    ...options,
-    headers: {
-      "X-Admin-Token": adminToken,
-      ...options.headers,
-    },
-  });
-}
-
-// ✅ Admin Debug API functions
-export async function getDbDebugStats(
-  docid?: string,
-): Promise<DbDebugResponse> {
-  const endpoint = docid
-    ? `/debug/db?docid=${encodeURIComponent(docid)}`
-    : "/debug/db";
-  return adminApiRequest<DbDebugResponse>(endpoint);
-}
-
-export async function getUsersDebugStats(): Promise<UsersDebugResponse> {
-  return adminApiRequest<UsersDebugResponse>("/debug/users");
 }
