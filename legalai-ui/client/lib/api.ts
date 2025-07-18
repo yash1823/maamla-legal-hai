@@ -4,6 +4,8 @@ import type {
   CaseDetailRequest,
   CaseDetailResponse,
   CaseResult,
+  DbDebugResponse,
+  UsersDebugResponse,
 } from "@shared/api";
 import { apiRequestWithAuth } from "./auth-interceptor";
 
