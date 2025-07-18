@@ -69,6 +69,17 @@ export function UserMenu() {
             My Bookmarks
           </Link>
         </DropdownMenuItem>
+        {hasAdminAccess && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="flex items-center">
+                <Shield className="h-4 w-4 mr-2" />
+                Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="text-destructive">
           <LogOut className="h-4 w-4 mr-2" />
