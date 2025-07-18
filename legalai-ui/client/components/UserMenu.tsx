@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { User, Heart, LogOut, LogIn, UserPlus } from "lucide-react";
+import { User, Heart, LogOut, LogIn, UserPlus, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
