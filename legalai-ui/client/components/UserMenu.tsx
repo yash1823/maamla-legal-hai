@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { User, Heart, LogOut, LogIn, UserPlus, Shield } from "lucide-react";
+import { User, Heart, LogOut, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,9 +13,6 @@ import { useAuth } from "@/contexts/AuthContext";
 export function UserMenu() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-
-  // Check if user has admin token
-  const hasAdminAccess = localStorage.getItem("admin_token") !== null;
 
   const handleLogout = () => {
     logout();
@@ -69,17 +66,6 @@ export function UserMenu() {
             My Bookmarks
           </Link>
         </DropdownMenuItem>
-        {hasAdminAccess && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/admin" className="flex items-center">
-                <Shield className="h-4 w-4 mr-2" />
-                Admin Dashboard
-              </Link>
-            </DropdownMenuItem>
-          </>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="text-destructive">
           <LogOut className="h-4 w-4 mr-2" />
