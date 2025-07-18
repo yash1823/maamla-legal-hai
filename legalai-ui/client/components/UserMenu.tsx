@@ -14,6 +14,9 @@ export function UserMenu() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
+  // Check if user has admin token
+  const hasAdminAccess = localStorage.getItem("admin_token") !== null;
+
   const handleLogout = () => {
     logout();
     navigate("/");
