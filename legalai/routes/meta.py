@@ -69,7 +69,7 @@ async def get_case_meta_data(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/health")
+@router.api_route("/health", methods=["GET", "HEAD"])
 async def health_check(request: Request):
     token = request.query_params.get("token")
     env_token = os.getenv("HEALTH_CHECK_TOKEN")
