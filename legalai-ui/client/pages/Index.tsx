@@ -97,7 +97,7 @@ export default function Index() {
     try {
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
-        page: 0,
+        page,
       };
 
       const filtersPayload: any = {};
