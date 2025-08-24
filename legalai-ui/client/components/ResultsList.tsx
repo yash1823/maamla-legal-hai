@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SearchLoader } from "@/components/ui/enhanced-loader";
 import { CaseCard } from "./CaseCard";
 import { Pagination, PaginationCompact } from "@/components/ui/pagination";
-import { useMediaQuery } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { CaseResult, PaginationInfo } from "@shared/api";
 
 interface ResultsListProps {
