@@ -90,8 +90,11 @@ export default function Index() {
   const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
+    // Ensure page is a valid number
+    const safePage = typeof page === 'number' && !isNaN(page) && page >= 0 ? page : 0;
+
     // Debug logging
-    console.log("🔍 handleSearch called with page:", page, typeof page);
+    console.log("🔍 handleSearch called with page:", page, "->", safePage, typeof safePage);
 
     setIsLoading(true);
     setError(null);
@@ -100,7 +103,7 @@ export default function Index() {
     try {
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
-        page: typeof page === 'number' ? page : 0, // Ensure page is always a number
+        page: safePage,
       };
 
       const filtersPayload: any = {};
