@@ -100,7 +100,7 @@ export function Pagination({
               key={page}
               variant={page === currentPageDisplay ? "default" : "outline"}
               size="sm"
-              onClick={() => onPageChange((page as number) - 1)} // Convert back to 0-based
+              onClick={() => onPageChange(Number(page) - 1)} // Convert back to 0-based and ensure number
               className="h-8 w-8 p-0"
             >
               {page}
