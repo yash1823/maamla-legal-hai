@@ -90,6 +90,9 @@ export default function Index() {
   const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
+    // Debug logging
+    console.log("🔍 handleSearch called with page:", page, typeof page);
+
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
@@ -97,7 +100,7 @@ export default function Index() {
     try {
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
-        page,
+        page: typeof page === 'number' ? page : 0, // Ensure page is always a number
       };
 
       const filtersPayload: any = {};
