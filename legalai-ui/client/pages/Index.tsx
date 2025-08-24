@@ -54,11 +54,13 @@ export default function Index() {
             searchQuery: prevQuery,
             filters: prevFilters,
             results: prevResults,
+            pagination: prevPagination,
             hasSearched: prevHasSearched,
           } = JSON.parse(savedState);
           setSearchQuery(prevQuery || "");
           setFilters(prevFilters || initialFilters);
           setResults(prevResults || []);
+          setPagination(prevPagination || null);
           setHasSearched(prevHasSearched || false);
         }
       } catch (error) {
