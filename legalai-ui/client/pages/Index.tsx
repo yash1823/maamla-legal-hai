@@ -17,6 +17,15 @@ const initialFilters: FilterValues = {
   bench: "",
 };
 
+// Cache structure for pagination results
+interface SearchCache {
+  [searchKey: string]: {
+    pages: { [page: number]: CaseResult[] };
+    pagination: PaginationInfo | null;
+    filters: FilterValues;
+  };
+}
+
 export default function Index() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +36,9 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const searchSectionRef = useRef<HTMLDivElement>(null);
+  const searchCache = useRef<SearchCache>({});
 
   // Restore search state from navigation state or localStorage
   useEffect(() => {
