@@ -146,6 +146,7 @@ export default function Index() {
         searchQuery: searchQuery.trim(),
         filters,
         results: newResults,
+        pagination: response.pagination || null,
         hasSearched: true,
       };
       localStorage.setItem("searchState", JSON.stringify(searchState));
