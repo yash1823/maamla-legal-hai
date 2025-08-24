@@ -404,7 +404,7 @@ export default function Index() {
             </p>
             <p className="mt-2 hidden sm:block">
               This platform provides access to legal information for research
-              and educational purposes.
+              and educational purposes. We use data provided by <a href="https://api.indiankanoon.org/" target="_blank" rel="noopener noreferrer">Indian Kanoon</a>
             </p>
             <p className="mt-2 sm:hidden">
               Legal information for research purposes.
