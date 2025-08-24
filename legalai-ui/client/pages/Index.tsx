@@ -87,7 +87,7 @@ export default function Index() {
     }
   }, [location.state]);
 
-  const handleSearch = async () => {
+  const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
     setIsLoading(true);
