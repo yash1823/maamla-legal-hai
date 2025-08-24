@@ -391,7 +391,7 @@ export default function Index() {
             error={error}
             searchQuery={hasSearched ? searchQuery : ""}
             onViewDetails={handleViewDetails}
-            onPageChange={handleSearch}
+            onPageChange={handlePageChange}
           />
         </section>
       </main>
