@@ -26,7 +26,7 @@ export function ResultsList({
   onViewDetails,
   onPageChange,
 }: ResultsListProps) {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useIsMobile();
 
   if (isLoading) {
     return <SearchLoader query={searchQuery} />;
