@@ -94,12 +94,14 @@ export default function Index() {
         results: prevResults,
         pagination: prevPagination,
         hasSearched: prevHasSearched,
+        currentPage: prevCurrentPage = 0,
       } = location.state.searchState;
       setSearchQuery(prevQuery);
       setFilters(prevFilters);
       setResults(prevResults);
       setPagination(prevPagination || null);
       setHasSearched(prevHasSearched);
+      setCurrentPage(prevCurrentPage);
     } else {
       // Try to restore from localStorage
       try {
