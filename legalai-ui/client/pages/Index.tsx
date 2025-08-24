@@ -23,6 +23,7 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const [results, setResults] = useState<CaseResult[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
