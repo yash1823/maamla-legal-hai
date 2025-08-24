@@ -145,11 +145,29 @@ export default function Index() {
   const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
+    // If it's a new search (page 0), clear the cache
+    if (page === 0) {
+      clearCacheForSearch();
+      setCurrentPage(0);
+    }
+
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
 
     try {
+      // Check cache first
+      if (isPageCached(page)) {
+        const cached = getCachedPage(page);
+        if (cached) {
+          setResults(cached.results);
+          setPagination(cached.pagination);
+          setCurrentPage(page);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
         page,
@@ -193,8 +211,13 @@ export default function Index() {
 
       const response = await searchCases(searchParams);
       const newResults = response.cases || [];
+
+      // Cache the results
+      cachePage(page, newResults, response.pagination || null);
+
       setResults(newResults);
       setPagination(response.pagination || null);
+      setCurrentPage(page);
 
       // Save search state to localStorage
       const searchState = {
@@ -203,6 +226,7 @@ export default function Index() {
         results: newResults,
         pagination: response.pagination || null,
         hasSearched: true,
+        currentPage: page,
       };
       localStorage.setItem("searchState", JSON.stringify(searchState));
     } catch (err) {
@@ -217,6 +241,36 @@ export default function Index() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Separate handler for page changes that uses cache when possible
+  const handlePageChange = async (page: number) => {
+    if (!searchQuery.trim()) return;
+
+    // Check if page is already cached
+    if (isPageCached(page)) {
+      const cached = getCachedPage(page);
+      if (cached) {
+        setResults(cached.results);
+        setPagination(cached.pagination);
+        setCurrentPage(page);
+
+        // Update localStorage with current page
+        const searchState = {
+          searchQuery: searchQuery.trim(),
+          filters,
+          results: cached.results,
+          pagination: cached.pagination,
+          hasSearched: true,
+          currentPage: page,
+        };
+        localStorage.setItem("searchState", JSON.stringify(searchState));
+        return;
+      }
+    }
+
+    // If not cached, fetch from API
+    await handleSearch(page);
   };
 
   const handleViewDetails = (docid: string) => {
