@@ -80,6 +80,14 @@ async function authApiRequest<T>(
 export async function searchCases(
   params: SearchRequest,
 ): Promise<SearchResponse> {
+  // Debug logging
+  console.log("📡 searchCases called with params:", params);
+  console.log("📡 params type check:", {
+    query: typeof params.query,
+    page: typeof params.page,
+    filters: typeof params.filters
+  });
+
   const response = await apiRequest<any>("/search", {
     method: "POST",
     body: JSON.stringify(params),
