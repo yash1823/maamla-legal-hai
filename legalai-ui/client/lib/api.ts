@@ -80,23 +80,36 @@ async function authApiRequest<T>(
 export async function searchCases(
   params: SearchRequest,
 ): Promise<SearchResponse> {
-  const data = await apiRequest<any>("/search", {
+  const response = await apiRequest<any>("/search", {
     method: "POST",
     body: JSON.stringify(params),
   });
 
-  const cases: CaseResult[] = data.docs.map((doc: any) => ({
+  // Handle new paginated response structure
+  let data, pagination;
+  if (response.data && response.pagination) {
+    // New pagination structure
+    data = response.data;
+    pagination = response.pagination;
+  } else {
+    // Fallback for old structure
+    data = response;
+    pagination = undefined;
+  }
+
+  const cases: CaseResult[] = data.docs?.map((doc: any) => ({
     docid: doc.tid.toString(),
     title: doc.title || "Untitled",
     docsource: doc.docsource || "Unknown Court",
     date: doc.publishdate || "Unknown Date",
     snippet: doc.fragment || "",
     numcites: doc.numcites || 0,
-  }));
+  })) || [];
 
   return {
     cases,
-    total: cases.length,
+    total: pagination?.total_results || cases.length,
+    pagination,
   };
 }
 
