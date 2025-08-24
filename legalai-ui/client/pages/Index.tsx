@@ -40,6 +40,50 @@ export default function Index() {
   const searchSectionRef = useRef<HTMLDivElement>(null);
   const searchCache = useRef<SearchCache>({});
 
+  // Generate cache key for current search + filters
+  const generateSearchKey = (query: string, searchFilters: FilterValues): string => {
+    return JSON.stringify({ query: query.trim(), filters: searchFilters });
+  };
+
+  // Check if page is cached for current search
+  const isPageCached = (page: number): boolean => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    return !!(searchCache.current[searchKey]?.pages[page]);
+  };
+
+  // Get cached page data
+  const getCachedPage = (page: number): { results: CaseResult[]; pagination: PaginationInfo | null } | null => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    const cached = searchCache.current[searchKey];
+    if (cached?.pages[page]) {
+      return {
+        results: cached.pages[page],
+        pagination: cached.pagination,
+      };
+    }
+    return null;
+  };
+
+  // Cache page data
+  const cachePage = (page: number, pageResults: CaseResult[], paginationInfo: PaginationInfo | null) => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    if (!searchCache.current[searchKey]) {
+      searchCache.current[searchKey] = {
+        pages: {},
+        pagination: paginationInfo,
+        filters,
+      };
+    }
+    searchCache.current[searchKey].pages[page] = pageResults;
+    searchCache.current[searchKey].pagination = paginationInfo;
+  };
+
+  // Clear cache when search query or filters change
+  const clearCacheForSearch = () => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    delete searchCache.current[searchKey];
+  };
+
   // Restore search state from navigation state or localStorage
   useEffect(() => {
     // First check navigation state (higher priority)
