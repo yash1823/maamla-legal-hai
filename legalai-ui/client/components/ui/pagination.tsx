@@ -145,17 +145,17 @@ export function PaginationCompact({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => onPageChange(Number(currentPage) - 1)}
           disabled={!hasPrev}
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Previous
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => onPageChange(Number(currentPage) + 1)}
           disabled={!hasNext}
         >
           Next
