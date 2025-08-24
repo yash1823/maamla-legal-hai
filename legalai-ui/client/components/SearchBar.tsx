@@ -62,7 +62,7 @@ export function SearchBar({
           />
         </div>
         <Button
-          onClick={onSearch}
+          onClick={() => onSearch()}
           disabled={isLoading || !value.trim()}
           size="lg"
           className="sm:ml-3 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-medium w-full sm:w-auto"
