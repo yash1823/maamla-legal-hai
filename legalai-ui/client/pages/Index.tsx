@@ -113,12 +113,14 @@ export default function Index() {
             results: prevResults,
             pagination: prevPagination,
             hasSearched: prevHasSearched,
+            currentPage: prevCurrentPage = 0,
           } = JSON.parse(savedState);
           setSearchQuery(prevQuery || "");
           setFilters(prevFilters || initialFilters);
           setResults(prevResults || []);
           setPagination(prevPagination || null);
           setHasSearched(prevHasSearched || false);
+          setCurrentPage(prevCurrentPage);
         }
       } catch (error) {
         console.log("Failed to restore search state:", error);
