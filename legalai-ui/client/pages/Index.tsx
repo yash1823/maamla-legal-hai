@@ -265,10 +265,12 @@ export default function Index() {
         <section>
           <ResultsList
             results={results}
+            pagination={pagination}
             isLoading={isLoading}
             error={error}
             searchQuery={hasSearched ? searchQuery : ""}
             onViewDetails={handleViewDetails}
+            onPageChange={handleSearch}
           />
         </section>
       </main>
