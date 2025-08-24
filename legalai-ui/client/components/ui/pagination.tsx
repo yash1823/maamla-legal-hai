@@ -82,7 +82,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => onPageChange(Number(currentPage) - 1)}
           disabled={!hasPrev}
           className="h-8 w-8 p-0"
         >
