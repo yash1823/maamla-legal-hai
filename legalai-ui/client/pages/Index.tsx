@@ -139,6 +139,7 @@ export default function Index() {
       const response = await searchCases(searchParams);
       const newResults = response.cases || [];
       setResults(newResults);
+      setPagination(response.pagination || null);
 
       // Save search state to localStorage
       const searchState = {
