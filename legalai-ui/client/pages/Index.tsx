@@ -142,6 +142,9 @@ export default function Index() {
         searchParams.filters = filtersPayload;
       }
 
+      // Debug: Log final searchParams before API call
+      console.log("🔍 Final searchParams before API call:", JSON.parse(JSON.stringify(searchParams)));
+
       const response = await searchCases(searchParams);
       const newResults = response.cases || [];
       setResults(newResults);
