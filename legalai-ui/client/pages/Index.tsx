@@ -37,11 +37,13 @@ export default function Index() {
         searchQuery: prevQuery,
         filters: prevFilters,
         results: prevResults,
+        pagination: prevPagination,
         hasSearched: prevHasSearched,
       } = location.state.searchState;
       setSearchQuery(prevQuery);
       setFilters(prevFilters);
       setResults(prevResults);
+      setPagination(prevPagination || null);
       setHasSearched(prevHasSearched);
     } else {
       // Try to restore from localStorage
