@@ -37,6 +37,45 @@ app.include_router(user_router)
 app.include_router(case_routes)
 
 # Routes
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from models.schemas import SearchFilters, SearchQuery, RelevanceRequest
+from utils.kanoon_api import fetch_case_by_docid, fetch_cases
+from utils.sambonva_utils import extract_keywords, hierarchical_relevance, summarize_case, explain_relevance
+from utils.db import get_meta, init_db, save_meta, save_summary
+from routes import case_routes, meta
+from routes.user_routes import router as user_router
+from routes.case_routes import router as case_routes 
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    await init_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "https://maamla-legal-hai-ui.onrender.com"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,           
+    allow_credentials=True,          
+    allow_methods=["*"],             
+    allow_headers=["*"],             
+)
+
+# Include sub-routers
+app.include_router(meta.router)
+app.include_router(user_router)
+app.include_router(case_routes)
+
+# Routes
 @app.post("/search")
 async def search_cases(search_query: SearchQuery):
     print("Search endpoint")
@@ -61,6 +100,14 @@ async def search_cases(search_query: SearchQuery):
     if f.maxpages is not None: params["maxpages"] = str(f.maxpages)
 
     result = await fetch_cases(params)
+     # Extract total result count
+    found_text = result.get("found", "")
+    total_count = 0
+    if "of" in found_text:
+        try:
+            total_count = int(found_text.split("of")[-1].strip().replace(",", ""))
+        except ValueError:
+            total_count = 0
 
     for case in result.get("cases", []):
         docid = case.get("docid")
@@ -68,7 +115,59 @@ async def search_cases(search_query: SearchQuery):
             save_meta(docid, search_query.query, modified_query)
             print(f"[API] Meta saved during search for docid={docid}")
 
-    return result
+    page_size = 10  # default
+    pagination_info = {
+        "current_page": search_query.page,
+        "page_size": page_size,
+        "total_results": total_count,
+        "has_next": (search_query.page + 1) * page_size < total_count,
+        "has_prev": search_query.page > 0
+    }
+
+    return {
+        "pagination": pagination_info,
+        "data": result
+    }
+
+
+@app.post("/doc/{docid}")
+async def get_case_by_docid(docid: str):
+    return await fetch_case_by_docid(docid)
+
+@app.post("/summarize/{docid}")
+async def summarize_doc(docid: str):
+    meta_data = await get_meta(docid)
+    if meta_data and meta_data.get("summary"):
+        return {"summary": meta_data["summary"]}
+
+    doc = await fetch_case_by_docid(docid)
+    case_text = doc.get("text") or doc.get("clean_doc", "")
+    # Use up to 128k tokens (approx 100k words)
+    if len(case_text) > 100000:
+        case_text = case_text[:100000]
+    summary = await summarize_case(case_text)
+    await save_summary(docid, summary)
+    return {"summary": summary}
+
+@app.post("/relevance/")
+async def case_relevance(request: RelevanceRequest):
+    meta_data = await get_meta(request.docid)
+    if meta_data and meta_data.get("summary"):
+        summary = meta_data["summary"]
+    else:
+        case = await fetch_case_by_docid(request.docid)
+        case_text = case.get("text") or case.get("clean_doc", "")
+        if len(case_text) > 100000:
+            case_text = case_text[:100000]
+        summary = await summarize_case(case_text)
+        await save_summary(request.docid, summary)
+
+    if not meta_data or not meta_data.get("query"):
+        await save_meta(request.docid, request.query, request.modified_query)
+
+    explanation = await hierarchical_relevance(request.query, summary)
+    return {"explanation": explanation}
+
 
 
 @app.post("/doc/{docid}")
