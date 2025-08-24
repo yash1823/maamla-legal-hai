@@ -17,6 +17,15 @@ const initialFilters: FilterValues = {
   bench: "",
 };
 
+// Cache structure for pagination results
+interface SearchCache {
+  [searchKey: string]: {
+    pages: { [page: number]: CaseResult[] };
+    pagination: PaginationInfo | null;
+    filters: FilterValues;
+  };
+}
+
 export default function Index() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +36,53 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const searchSectionRef = useRef<HTMLDivElement>(null);
+  const searchCache = useRef<SearchCache>({});
+
+  // Generate cache key for current search + filters
+  const generateSearchKey = (query: string, searchFilters: FilterValues): string => {
+    return JSON.stringify({ query: query.trim(), filters: searchFilters });
+  };
+
+  // Check if page is cached for current search
+  const isPageCached = (page: number): boolean => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    return !!(searchCache.current[searchKey]?.pages[page]);
+  };
+
+  // Get cached page data
+  const getCachedPage = (page: number): { results: CaseResult[]; pagination: PaginationInfo | null } | null => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    const cached = searchCache.current[searchKey];
+    if (cached?.pages[page]) {
+      return {
+        results: cached.pages[page],
+        pagination: cached.pagination,
+      };
+    }
+    return null;
+  };
+
+  // Cache page data
+  const cachePage = (page: number, pageResults: CaseResult[], paginationInfo: PaginationInfo | null) => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    if (!searchCache.current[searchKey]) {
+      searchCache.current[searchKey] = {
+        pages: {},
+        pagination: paginationInfo,
+        filters,
+      };
+    }
+    searchCache.current[searchKey].pages[page] = pageResults;
+    searchCache.current[searchKey].pagination = paginationInfo;
+  };
+
+  // Clear cache when search query or filters change
+  const clearCacheForSearch = () => {
+    const searchKey = generateSearchKey(searchQuery, filters);
+    delete searchCache.current[searchKey];
+  };
 
   // Restore search state from navigation state or localStorage
   useEffect(() => {
@@ -39,12 +94,14 @@ export default function Index() {
         results: prevResults,
         pagination: prevPagination,
         hasSearched: prevHasSearched,
+        currentPage: prevCurrentPage = 0,
       } = location.state.searchState;
       setSearchQuery(prevQuery);
       setFilters(prevFilters);
       setResults(prevResults);
       setPagination(prevPagination || null);
       setHasSearched(prevHasSearched);
+      setCurrentPage(prevCurrentPage);
     } else {
       // Try to restore from localStorage
       try {
@@ -56,12 +113,14 @@ export default function Index() {
             results: prevResults,
             pagination: prevPagination,
             hasSearched: prevHasSearched,
+            currentPage: prevCurrentPage = 0,
           } = JSON.parse(savedState);
           setSearchQuery(prevQuery || "");
           setFilters(prevFilters || initialFilters);
           setResults(prevResults || []);
           setPagination(prevPagination || null);
           setHasSearched(prevHasSearched || false);
+          setCurrentPage(prevCurrentPage);
         }
       } catch (error) {
         console.log("Failed to restore search state:", error);
@@ -90,11 +149,29 @@ export default function Index() {
   const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
+    // If it's a new search (page 0), clear the cache
+    if (page === 0) {
+      clearCacheForSearch();
+      setCurrentPage(0);
+    }
+
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
 
     try {
+      // Check cache first
+      if (isPageCached(page)) {
+        const cached = getCachedPage(page);
+        if (cached) {
+          setResults(cached.results);
+          setPagination(cached.pagination);
+          setCurrentPage(page);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
         page,
@@ -138,8 +215,13 @@ export default function Index() {
 
       const response = await searchCases(searchParams);
       const newResults = response.cases || [];
+
+      // Cache the results
+      cachePage(page, newResults, response.pagination || null);
+
       setResults(newResults);
       setPagination(response.pagination || null);
+      setCurrentPage(page);
 
       // Save search state to localStorage
       const searchState = {
@@ -148,6 +230,7 @@ export default function Index() {
         results: newResults,
         pagination: response.pagination || null,
         hasSearched: true,
+        currentPage: page,
       };
       localStorage.setItem("searchState", JSON.stringify(searchState));
     } catch (err) {
@@ -164,6 +247,36 @@ export default function Index() {
     }
   };
 
+  // Separate handler for page changes that uses cache when possible
+  const handlePageChange = async (page: number) => {
+    if (!searchQuery.trim()) return;
+
+    // Check if page is already cached
+    if (isPageCached(page)) {
+      const cached = getCachedPage(page);
+      if (cached) {
+        setResults(cached.results);
+        setPagination(cached.pagination);
+        setCurrentPage(page);
+
+        // Update localStorage with current page
+        const searchState = {
+          searchQuery: searchQuery.trim(),
+          filters,
+          results: cached.results,
+          pagination: cached.pagination,
+          hasSearched: true,
+          currentPage: page,
+        };
+        localStorage.setItem("searchState", JSON.stringify(searchState));
+        return;
+      }
+    }
+
+    // If not cached, fetch from API
+    await handleSearch(page);
+  };
+
   const handleViewDetails = (docid: string) => {
     // Pass current search state so it can be restored on back navigation
     navigate(`/case/${docid}`, {
@@ -174,6 +287,7 @@ export default function Index() {
           results,
           pagination,
           hasSearched,
+          currentPage,
         },
       },
     });
@@ -182,6 +296,13 @@ export default function Index() {
   const handleClearFilters = () => {
     setFilters(initialFilters);
   };
+
+  // Clear cache when filters change (except on initial load)
+  useEffect(() => {
+    if (hasSearched) {
+      clearCacheForSearch();
+    }
+  }, [filters]);
 
   const courtTypeMap: Record<string, string> = {
     "Supreme Court of India": "supremecourt",
@@ -270,7 +391,7 @@ export default function Index() {
             error={error}
             searchQuery={hasSearched ? searchQuery : ""}
             onViewDetails={handleViewDetails}
-            onPageChange={handleSearch}
+            onPageChange={handlePageChange}
           />
         </section>
       </main>
