@@ -158,6 +158,7 @@ export default function Index() {
           : "An error occurred while searching",
       );
       setResults([]);
+      setPagination(null);
     } finally {
       setIsLoading(false);
     }
