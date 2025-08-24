@@ -3,23 +3,31 @@ import { AlertCircle, FileSearch } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SearchLoader } from "@/components/ui/enhanced-loader";
 import { CaseCard } from "./CaseCard";
-import type { CaseResult } from "@shared/api";
+import { Pagination, PaginationCompact } from "@/components/ui/pagination";
+import { useMediaQuery } from "@/hooks/use-mobile";
+import type { CaseResult, PaginationInfo } from "@shared/api";
 
 interface ResultsListProps {
   results: CaseResult[];
+  pagination?: PaginationInfo | null;
   isLoading: boolean;
   error: string | null;
   searchQuery: string;
   onViewDetails: (docid: string) => void;
+  onPageChange?: (page: number) => void;
 }
 
 export function ResultsList({
   results,
+  pagination,
   isLoading,
   error,
   searchQuery,
   onViewDetails,
+  onPageChange,
 }: ResultsListProps) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   if (isLoading) {
     return <SearchLoader query={searchQuery} />;
   }
@@ -63,12 +71,21 @@ export function ResultsList({
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      <h2 className="text-lg sm:text-xl font-semibold text-foreground">
-        Search Results
-        <span className="ml-2 text-xs sm:text-sm text-muted-foreground">
-          ({results.length} found)
-        </span>
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">
+          Search Results
+          {pagination && (
+            <span className="ml-2 text-xs sm:text-sm text-muted-foreground">
+              ({pagination.total_results.toLocaleString()} found)
+            </span>
+          )}
+          {!pagination && (
+            <span className="ml-2 text-xs sm:text-sm text-muted-foreground">
+              ({results.length} found)
+            </span>
+          )}
+        </h2>
+      </div>
 
       <div className="grid gap-4 sm:gap-6">
         {results.map((caseData) => (
@@ -83,6 +100,33 @@ export function ResultsList({
           />
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {pagination && onPageChange && pagination.total_results > pagination.page_size && (
+        <div className="mt-8">
+          {isMobile ? (
+            <PaginationCompact
+              currentPage={pagination.current_page}
+              totalResults={pagination.total_results}
+              pageSize={pagination.page_size}
+              hasNext={pagination.has_next}
+              hasPrev={pagination.has_prev}
+              onPageChange={onPageChange}
+              className="justify-center"
+            />
+          ) : (
+            <Pagination
+              currentPage={pagination.current_page}
+              totalResults={pagination.total_results}
+              pageSize={pagination.page_size}
+              hasNext={pagination.has_next}
+              hasPrev={pagination.has_prev}
+              onPageChange={onPageChange}
+              className="justify-center"
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
