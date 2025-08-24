@@ -287,6 +287,7 @@ export default function Index() {
           results,
           pagination,
           hasSearched,
+          currentPage,
         },
       },
     });
@@ -295,6 +296,13 @@ export default function Index() {
   const handleClearFilters = () => {
     setFilters(initialFilters);
   };
+
+  // Clear cache when filters change (except on initial load)
+  useEffect(() => {
+    if (hasSearched) {
+      clearCacheForSearch();
+    }
+  }, [filters]);
 
   const courtTypeMap: Record<string, string> = {
     "Supreme Court of India": "supremecourt",
