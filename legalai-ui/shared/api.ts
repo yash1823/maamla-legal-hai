@@ -28,9 +28,18 @@ export interface CaseResult {
   numcites?: number; // renamed from citation_count
 }
 
+export interface PaginationInfo {
+  current_page: number;
+  page_size: number;
+  total_results: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
 export interface SearchResponse {
   cases: CaseResult[];
   total: number;
+  pagination?: PaginationInfo;
 }
 
 export interface CaseDetailRequest {

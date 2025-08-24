@@ -6,7 +6,7 @@ import { FilterSection, FilterValues } from "@/components/FilterSection";
 import { ResultsList } from "@/components/ResultsList";
 import { UserMenu } from "@/components/UserMenu";
 import { searchCases } from "@/lib/api";
-import type { CaseResult, SearchRequest } from "@shared/api";
+import type { CaseResult, SearchRequest, PaginationInfo } from "@shared/api";
 
 const initialFilters: FilterValues = {
   courtTypes: [],
@@ -23,6 +23,7 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const [results, setResults] = useState<CaseResult[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
@@ -36,11 +37,13 @@ export default function Index() {
         searchQuery: prevQuery,
         filters: prevFilters,
         results: prevResults,
+        pagination: prevPagination,
         hasSearched: prevHasSearched,
       } = location.state.searchState;
       setSearchQuery(prevQuery);
       setFilters(prevFilters);
       setResults(prevResults);
+      setPagination(prevPagination || null);
       setHasSearched(prevHasSearched);
     } else {
       // Try to restore from localStorage
@@ -51,11 +54,13 @@ export default function Index() {
             searchQuery: prevQuery,
             filters: prevFilters,
             results: prevResults,
+            pagination: prevPagination,
             hasSearched: prevHasSearched,
           } = JSON.parse(savedState);
           setSearchQuery(prevQuery || "");
           setFilters(prevFilters || initialFilters);
           setResults(prevResults || []);
+          setPagination(prevPagination || null);
           setHasSearched(prevHasSearched || false);
         }
       } catch (error) {
@@ -82,7 +87,7 @@ export default function Index() {
     }
   }, [location.state]);
 
-  const handleSearch = async () => {
+  const handleSearch = async (page: number = 0) => {
     if (!searchQuery.trim()) return;
 
     setIsLoading(true);
@@ -92,7 +97,7 @@ export default function Index() {
     try {
       const searchParams: SearchRequest = {
         query: searchQuery.trim(),
-        page: 0,
+        page,
       };
 
       const filtersPayload: any = {};
@@ -134,12 +139,14 @@ export default function Index() {
       const response = await searchCases(searchParams);
       const newResults = response.cases || [];
       setResults(newResults);
+      setPagination(response.pagination || null);
 
       // Save search state to localStorage
       const searchState = {
         searchQuery: searchQuery.trim(),
         filters,
         results: newResults,
+        pagination: response.pagination || null,
         hasSearched: true,
       };
       localStorage.setItem("searchState", JSON.stringify(searchState));
@@ -151,6 +158,7 @@ export default function Index() {
           : "An error occurred while searching",
       );
       setResults([]);
+      setPagination(null);
     } finally {
       setIsLoading(false);
     }
@@ -164,6 +172,7 @@ export default function Index() {
           searchQuery,
           filters,
           results,
+          pagination,
           hasSearched,
         },
       },
@@ -256,10 +265,12 @@ export default function Index() {
         <section>
           <ResultsList
             results={results}
+            pagination={pagination}
             isLoading={isLoading}
             error={error}
             searchQuery={hasSearched ? searchQuery : ""}
             onViewDetails={handleViewDetails}
+            onPageChange={handleSearch}
           />
         </section>
       </main>
